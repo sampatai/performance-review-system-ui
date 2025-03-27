@@ -5,11 +5,7 @@
         <h3 class="text-center font-weight-light my-4">Create Account</h3>
       </div>
       <div class="card-body">
-        <form
-          [formGroup]="registerForm"
-          (ngSubmit)="register()"
-          autocomplete="off"
-        >
+        <form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
           <div class="row mb-3">
             <div class="col-md-6">
               <div class="form-floating mb-3 mb-md-0">
@@ -18,19 +14,10 @@
                   class="form-control"
                   type="text"
                   placeholder="Enter your first name"
-                  [class.is.invalid]="
-                    submitted && registerForm.get('firstName')?.errors
-                  "
+                  [class.is-invalid]="submitted && registerForm.get('firstName')?.invalid"
                 />
                 <label for="firstName">First name</label>
-
-                <span
-                  class="text-danger"
-                  *ngIf="
-                    submitted &&
-                    registerForm.get('firstName')?.hasError('required')
-                  "
-                >
+                <span class="text-danger" *ngIf="submitted && registerForm.get('firstName')?.hasError('required')">
                   First name is required
                 </span>
               </div>
@@ -42,70 +29,42 @@
                   class="form-control"
                   type="text"
                   placeholder="Enter your last name"
-                  [class.is.invalid]="
-                    submitted && registerForm.get('lastName')?.errors
-                  "
+                  [class.is-invalid]="submitted && registerForm.get('lastName')?.invalid"
                 />
                 <label for="lastName">Last name</label>
-                <span
-                  class="text-danger"
-                  *ngIf="
-                    submitted &&
-                    registerForm.get('lastName')?.hasError('required')
-                  "
-                  >Last name is required</span
-                >
+                <span class="text-danger" *ngIf="submitted && registerForm.get('lastName')?.hasError('required')">
+                  Last name is required
+                </span>
               </div>
             </div>
           </div>
+
           <div class="form-floating mb-3">
             <input
               class="form-control"
               formControlName="email"
               type="email"
-              [class.is.invalid]="
-                submitted && registerForm.get('email')?.errors
-              "
+              [class.is-invalid]="submitted && registerForm.get('email')?.invalid"
               placeholder="name@example.com"
             />
             <label for="inputEmail">Email address</label>
-            <span
-              class="text-danger"
-              *ngIf="
-                submitted && registerForm.get('email')?.hasError('required')
-              "
-            >
+            <span class="text-danger" *ngIf="submitted && registerForm.get('email')?.hasError('required')">
               Email is required
             </span>
-            <span
-              class="text-danger"
-              *ngIf="
-                submitted && registerForm.get('email')?.hasError('pattern')
-              "
-            >
-              Invalid email address</span
-            >
+            <!-- <span class="text-danger" *ngIf="submitted && registerForm.get('email')?.hasError('pattern')">
+              Invalid email address
+            </span> -->
           </div>
+
           <div class="row mb-3">
             <div class="col-md-6">
               <div class="form-floating mb-3 mb-md-0">
-                <select
-                  class="form-control"
-                  id="teamSelect"
-                  formControlName="team"
-                >
-                  <option value="">Select a Team</option>
-                  <option *ngFor="let team of teams" [ngValue]="team">
-                    {{ team.name }}
-                  </option>
+                <select class="form-control" id="teamSelect" formControlName="team">
+                  <option [ngValue]="null">Select a Team</option>
+                  <option *ngFor="let team of teams" [ngValue]="team.id">{{ team.name }}</option>
                 </select>
-                <label for="inputPassword">Team</label>
-                <span
-                  *ngIf="
-                    submitted && registerForm.get('team')?.hasError('required')
-                  "
-                  class="text-danger"
-                >
+                <label for="team">Team</label>
+                <span class="text-danger" *ngIf="submitted && registerForm.get('team')?.hasError('required')">
                   Team selection is required
                 </span>
               </div>
@@ -113,28 +72,20 @@
             <div class="col-md-6">
               <div class="form-floating mb-3 mb-md-0">
                 <select class="form-control" id="role" formControlName="role">
-                  <option value="">Select a Team</option>
-                  <option *ngFor="let role of roles" [ngValue]="role">
-                    {{ role.name }}
-                  </option>
+                  <option [ngValue]="null">Select a Role</option>
+                  <option *ngFor="let role of roles" [ngValue]="role.id">{{ role.name }}</option>
                 </select>
                 <label for="role">Role</label>
-                <span
-                  *ngIf="
-                    submitted && registerForm.get('role')?.hasError('required')
-                  "
-                  class="text-danger"
-                >
+                <span class="text-danger" *ngIf="submitted && registerForm.get('role')?.hasError('required')">
                   Role selection is required
                 </span>
               </div>
             </div>
           </div>
+
           <div class="mt-4 mb-0">
             <div class="d-grid">
-              <a class="btn btn-primary btn-block" href="login.html"
-                >Create Account</a
-              >
+              <button class="btn btn-primary btn-block" type="submit">Create Account</button>
             </div>
           </div>
         </form>
