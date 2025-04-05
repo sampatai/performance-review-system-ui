@@ -1,4 +1,3 @@
-<form [formGroup]="loginForm" (ngSubmit)="login()"></form>
 <div class="row justify-content-center">
   <div class="col-lg-5">
     <div class="card shadow-lg border-0 rounded-lg mt-5">
@@ -6,51 +5,33 @@
         <h3 class="text-center font-weight-light my-4">Login</h3>
       </div>
       <div class="card-body">
-        <form>
+        <!-- Corrected Form with [formGroup] -->
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
           <div class="form-floating mb-3">
-            <input
-              formControlName="userName"
-              class="form-control"
-              id="inputuserName"
-              type="email"
-              placeholder="Username (your email address)"
-              [class.is.invalid]="
-                submitted && loginForm.get('userName')?.errors
-              "
-            />
+            <input formControlName="userName" class="form-control" id="inputuserName" type="email"
+              placeholder="Username (your email address)" [class.is-invalid]="submitted && loginForm.get('userName')?.invalid" />
             <label for="inputuserName">Email address</label>
-            <span
-              class="text-danger"
-              *ngIf="
-                submitted && loginForm.get('userName')?.hasError('required')
-              "
-            >
+            <!-- Error Message for Username -->
+            <span class="text-danger" *ngIf="submitted && loginForm.get('userName')?.hasError('required')">
+              Username is required
             </span>
           </div>
           <div class="form-floating mb-3">
-            <input
-              formControlName="password"
-              class="form-control"
-              id="inputPassword"
-              type="password"
-              placeholder="Password"
-              [class.is.invalid]="
-                submitted && loginForm.get('password')?.hasError('required')
-              "
-            />
+            <input formControlName="password" class="form-control" id="inputPassword" type="password"
+              placeholder="Password" [class.is-invalid]="submitted && loginForm.get('password')?.invalid" />
             <label for="inputPassword">Password</label>
-            <span
-              class="text-danger"
-              *ngIf="
-                submitted && loginForm.get('password')?.hasError('required')
-              "
-            >
+            <!-- Error Message for Password -->
+            <span class="text-danger" *ngIf="submitted && loginForm.get('password')?.hasError('required')">
+              Password is required
             </span>
           </div>
-          <div class="form-floatin" *ngIf="errorMessage.length > 0">
-            <app-validation-message [errorMessages]="errorMessage">
-            </app-validation-message>
+
+          <!-- Validation Message for other errors -->
+          <div class="form-floating" *ngIf="errorMessage.length > 0">
+            <app-validation-message [errorMessages]="errorMessage"></app-validation-message>
           </div>
+
+          <!-- Submit Button -->
           <div class="d-grid mt-4 px-1">
             <button class="btn btn-primary" type="submit">Login</button>
           </div>

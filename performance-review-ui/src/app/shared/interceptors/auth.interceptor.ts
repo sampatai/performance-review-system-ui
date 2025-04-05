@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, switchMap, take } from 'rxjs';
-import { AccountService } from '../../account/services/account.service.service';
+import { AccountService } from '../../account/services/account.service';
 
 export const AuthInterceptor: HttpInterceptorFn = (
   req: HttpRequest<any>,
@@ -18,6 +18,7 @@ export const AuthInterceptor: HttpInterceptorFn = (
   return accountService.user$.pipe(
     take(1),
     switchMap((user) => {
+      debugger;
       if (user) {
         req = req.clone({
           setHeaders: {
