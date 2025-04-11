@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <input type="text" class="form-control w-50" placeholder="Search..." [(ngModel)]="searchTerm" />
+
+    <select class="form-select w-auto ms-3"
+          [(ngModel)]="pageSize"
+          (ngModelChange)="onPageSizeChange($event)">
+    <option *ngFor="let size of pageSizeOptions" [value]="size">
+      {{ size === 0 ? 'All' : size }}
+    </option>
+  </select>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th *ngFor="let col of colums" (click)="sorting(col.key)">
+                {{ col.label }}
+                <span *ngIf="sortColumn()===col.key">
+                    {{ sortDirection() === 'asc' ? '▲' : '▼' }}
+                </span>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngfor="let item of data">
+            <td *ngFor="let col of colums">
+                {{ getItemValue(item,col.key) }}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<nav *ngIf="totalPages>1">
+    <ul class="pagination">
+<li class="page-item"[class.disabled]="currentPage()===1" >
+    <button class="page-link" (click)="onChangePage(currentPage()-1)">Previous</button>
+</li>
+<li class="page-item disabled">
+    <span class="page-link">{{currentPage()}}/{{totalPages}}</span>
+
+</li>
+<li class="page-item" [class.disabled]="currentPage()==totalPages">
+    <button class="page-link" (click)="onChangePage(currentPage() + 1)">Next</button>
+</li>
+    </ul>
+</nav>
