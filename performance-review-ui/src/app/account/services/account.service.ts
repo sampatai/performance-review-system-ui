@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, model } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
@@ -7,7 +7,9 @@ import { Login } from '../../shared/models/accounts/Login/Login';
 import { map } from 'rxjs/operators';
 import { User } from '../../shared/models/accounts/user/User';
 import { jwtDecode } from 'jwt-decode';
-import { ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
+import { pageList } from '../../shared/models/common/PageList';
+import { filter } from '../../shared/models/common/filter';
 @Injectable({
   providedIn: 'root',
 })
@@ -33,13 +35,14 @@ export class AccountService {
     return this.http.post(`${environment.appUrl}account/register`, model);
   }
   login(model: Login) {
-    console.log(this.http.post<User>(`${environment.appUrl}account/login`, model));
-    return this.http.post<User>(`${environment.appUrl}account/login`, model)
+    console.log(
+      this.http.post<User>(`${environment.appUrl}account/login`, model)
+    );
+    return this.http
+      .post<User>(`${environment.appUrl}account/login`, model)
       .pipe(
         map((user: User) => {
-         
           if (user && user.jwt) {
-           
             this.setUser(user);
           }
         })
@@ -73,4 +76,9 @@ export class AccountService {
         error: (error) => {},
       });
   };
+
+  getUser(params: filter): Observable<pageList<User>> {
+   debugger;
+    return this.http.post<pageList<User>>(`${environment.appUrl}staff/users`,  params);
+  }
 }

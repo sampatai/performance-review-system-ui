@@ -4,6 +4,7 @@ import { LoginLayoutComponent } from './login-layout/login-layout.component';
 import { LoginComponent } from './account/login/login.component';
 import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { authGuard } from './shared/guards/auth.guard';
+import { ListUserComponent } from './account/list-user/list-user.component';
 
 export const routes: Routes = [
   // Redirect empty path to login if not logged in
@@ -43,6 +44,10 @@ export const routes: Routes = [
       {
         path: 'account/register',  // Registration route
         component: RegisterUserComponent
+      },
+      {
+        path: 'staff/list',  // Registration route
+        component: ListUserComponent
       }
     ]
   },

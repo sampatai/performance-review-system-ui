@@ -3,8 +3,12 @@ import {
   Component,
   effect,
   EventEmitter,
+  inject,
+  Injector,
   Input,
+  OnInit,
   Output,
+  runInInjectionContext,
   signal,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -17,10 +21,10 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
   templateUrl: './pagination.component.html',
   styleUrl: './pagination.component.css',
 })
-export class PaginationComponent {
+export class PaginationComponent  {
   @Input() data: any[] = [];
   @Input() totalItems: number = 0;
-  @Input() colums: { label: string; key: string }[] = [];
+  @Input() columns: { label: string; key: string }[] = [];
 
 //The @Output() decorator is used to send data from a child component to its parent.
   @Output() pageChange = new EventEmitter<{
@@ -37,17 +41,24 @@ export class PaginationComponent {
   sortDirection = signal<'asc' | 'desc'>('asc');
   pageSize = signal(10);
   pageSizeOptions: number[] = [10, 25, 50, 0];
+  private injector = inject(Injector); // Inject the Injector for DI context
   constructor() {
+    // Initialize the search term signal with an empty string
+    
+  runInInjectionContext(this.injector, () => {
     effect(() =>
       toObservable(this.searchTerm)
-    //ensures the stream only emits when the value actually changes.
+      //ensures the stream only emits when the value actually changes.
+
         .pipe(debounceTime(300), distinctUntilChanged())
         .subscribe(() => {
           this.currentPage.set(1);
-          this.emitChange();//// Notify parent with new search query
+          this.emitChange(); // Notify parent with new search query
         })
     );
+  });
   }
+ 
 
   get totalPages(): number {
     const size = this.pageSize();

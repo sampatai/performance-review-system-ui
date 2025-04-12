@@ -18,7 +18,7 @@ export const AuthInterceptor: HttpInterceptorFn = (
   return accountService.user$.pipe(
     take(1),
     switchMap((user) => {
-      debugger;
+      
       if (user) {
         req = req.clone({
           setHeaders: {
