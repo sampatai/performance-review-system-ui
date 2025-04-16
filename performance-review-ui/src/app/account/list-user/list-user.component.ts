@@ -32,8 +32,8 @@ export class ListUserComponent {
     { label: 'First Name', key: 'firstName' },
     { label: 'Last Name', key: 'lastName' },
     { label: 'Email', key: 'email' },
-    { label: 'Team', key: 'team.nameValue' },
-    { label: 'Role', key: 'role.nameValue' },
+    { label: 'Team', key: 'team.name' },
+    { label: 'Role', key: 'role.name' },
   ];
   constructor(private accountService: AccountService) {
     
@@ -43,9 +43,7 @@ export class ListUserComponent {
     
     // Reactively call API on state change
     effect(() => {
-      debugger
       const params = this.filterParams();
-
       this.users$ = this.accountService.getUser(params).pipe(
         tap(res => this.totalRecords.set(res.totalRecords)),
         map(res => res.data)
@@ -60,7 +58,7 @@ export class ListUserComponent {
     sortDirection: 'asc' | 'desc';
     pagesize: number;
   }) {
-    debugger;
+   
     this.page.set(event.page);
     this.pageSize.set(event.pagesize);
     this.search.set(event.search);

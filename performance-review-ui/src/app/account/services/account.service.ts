@@ -35,9 +35,7 @@ export class AccountService {
     return this.http.post(`${environment.appUrl}account/register`, model);
   }
   login(model: Login) {
-    console.log(
-      this.http.post<User>(`${environment.appUrl}account/login`, model)
-    );
+    
     return this.http
       .post<User>(`${environment.appUrl}account/login`, model)
       .pipe(
@@ -78,7 +76,7 @@ export class AccountService {
   };
 
   getUser(params: filter): Observable<pageList<User>> {
-   debugger;
+  
     return this.http.post<pageList<User>>(`${environment.appUrl}staff/users`,  params);
   }
 }
