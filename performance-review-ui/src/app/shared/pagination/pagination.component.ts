@@ -9,43 +9,36 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-type SortDirection = 'asc' | 'desc';
-interface PageChangeEvent {
-  page: number;
-  search: string;
-  sortColumn: string;
-  sortDirection: SortDirection;
-  pagesize: number;
-}
-
-interface TableColumn {
-  label: string;
-  key: string;
-}
 
 @Component({
   selector: 'app-pagination',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './pagination.component.html',
-  styleUrl: './pagination.component.css',
+  imports: [CommonModule,FormsModule],
+  templateUrl: './pagination.component.html'
+  
 })
-export class PaginationComponent {
+export class PaginationComponent  {
   @Input() data: any[] = [];
-  @Input() totalItems = 0;
-  @Input() columns: TableColumn[] = [];
+  @Input() totalItems: number = 0;
+  @Input() columns: { label: string; key: string }[] = [];
 
-  @Output() pageChange = new EventEmitter<PageChangeEvent>();
+//The @Output() decorator is used to send data from a child component to its parent.
+  @Output() pageChange = new EventEmitter<{
+    page: number;
+    search: string;
+    sortColumn: string;
+    sortDirection: 'asc' | 'desc';
+    pagesize: number;
+  }>();
 
-  // Signals
-  searchTerm = signal('');
+  searchTerm = signal('');//Manage local state without RxJS
   currentPage = signal(1);
   sortColumn = signal('');
-  sortDirection = signal<SortDirection>('asc');
+  sortDirection = signal<'asc' | 'desc'>('asc');
   pageSize = signal(10);
-  readonly pageSizeOptions = [10, 25, 50, 0] as const;
-
+  pageSizeOptions: number[] = [10, 25, 50, 0];
+  
   constructor() {
+    // Initialize the search term signal with an empty string
     effect(() => {
       const term = this.searchTerm();
       if (term.length >= 3 || term.length === 0) {
@@ -54,37 +47,38 @@ export class PaginationComponent {
       }
     });
   }
+ 
 
   get totalPages(): number {
     const size = this.pageSize();
-    return size === 0 ? 1 : Math.ceil(this.totalItems / size);
+    return size===0?1: Math.ceil(this.totalItems / size);
   }
-
-  onPageSizeChange(size: number | string): void {
-    const newSize = size === 0 ? this.totalItems : +size;
-    this.pageSize.set(newSize);
+  onPageSizeChange(size: number) {
+   if(size===0) 
+    this.pageSize.set(this.totalItems);
+    else
+    this.pageSize.set(+size);
     this.currentPage.set(1);
     this.emitChange();
   }
 
-  onChangePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage.set(page);
-      this.emitChange();
-    }
+  onChangePage(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage.set(page);
+    this.emitChange();
   }
-
-  sorting(column: string): void {
+  sorting(column: string) {
     if (this.sortColumn() === column) {
-      this.sortDirection.update(dir => dir === 'asc' ? 'desc' : 'asc');
+      this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
     } else {
       this.sortColumn.set(column);
       this.sortDirection.set('asc');
     }
     this.emitChange();
   }
-
-  private emitChange(): void {
+  //child needs a way to tell the parent about changes in the data.
+  // what change.emit(...) does
+  private emitChange() {
     this.pageChange.emit({
       page: this.currentPage(),
       search: this.searchTerm(),
@@ -92,9 +86,13 @@ export class PaginationComponent {
       sortDirection: this.sortDirection(),
       pagesize: this.pageSize(),
     });
+  
   }
-
-  getItemValue(item: any, key: string): any {
-    return key.split('.').reduce((o, i) => o?.[i], item);
+  getItemValue(item: any,key:String):any{
+    //reduces the array of keys into a single value (the value of the nested property).
+    //reduce() is used here to iterate over the array of keys,
+    //  starting from the item object and drilling down
+    //  into the nested properties
+    return key.split('.').reduce((o, i) => o[i], item);
   }
 }
