@@ -9,6 +9,7 @@ import {
 import { Team } from '../../shared/Enums/Team';
 import { Role } from '../../shared/Enums/Role';
 import { AccountService } from '../services/account.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register-user',
@@ -25,7 +26,8 @@ export class RegisterUserComponent implements OnInit {
   errorMessage: string[] = [];
   constructor(
     private formBuilder: FormBuilder,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private router: Router
   ) {}
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -49,7 +51,8 @@ export class RegisterUserComponent implements OnInit {
     if (this.registerForm.valid) {
       this.accountService.register(this.registerForm.value).subscribe({
         next: (response: any) => {
-          console.log(response);
+          
+            this.router.navigate(['/staff/list']);
         },
         error: (error) => {
           if (error.error.errors) {
