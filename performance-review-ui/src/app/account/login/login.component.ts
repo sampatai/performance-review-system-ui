@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
   submitted = false;
   errorMessage: string[] = [];
   returnUrl: string | null = null;
+  
 
   constructor(
     private formBuilder: FormBuilder,
@@ -81,6 +82,7 @@ export class LoginComponent implements OnInit {
           }
         },
         error: (err) => {
+          this.submitted = false;
           this.errorMessage.push('Login failed: ' + err.message);
         }
       });

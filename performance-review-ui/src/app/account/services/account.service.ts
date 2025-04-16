@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 import { User } from '../../shared/models/accounts/user/User';
 import { jwtDecode } from 'jwt-decode';
 import { Observable, ReplaySubject } from 'rxjs';
-import { pageList } from '../../shared/models/common/PageList';
+import { pageList } from '../../shared/models/common/pageList';
 import { filter } from '../../shared/models/common/filter';
 @Injectable({
   providedIn: 'root',
