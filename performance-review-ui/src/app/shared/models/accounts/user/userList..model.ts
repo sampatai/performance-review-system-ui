@@ -1,4 +1,4 @@
-import { nameValue } from "../../common/nameValue";
+import { nameValue } from "../../common/nameValue.model";
 
 export interface User {
     staffGuid: string;

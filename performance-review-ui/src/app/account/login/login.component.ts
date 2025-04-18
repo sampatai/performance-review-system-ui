@@ -10,7 +10,7 @@ import { ValidationMessageComponent } from '../../shared/component/validation-me
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AccountService } from '../services/account.service';
 import { of, switchMap, take } from 'rxjs';
-import { User } from '../../shared/models/accounts/user/User';
+import { User } from '../../shared/models/accounts/user/User.model';
 
 @Component({
   selector: 'app-login',

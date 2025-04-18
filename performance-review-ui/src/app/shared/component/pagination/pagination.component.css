@@ -1,0 +1,7 @@
+sortable-header:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+  }
+  .active-sort {
+    background-color: #e9ecef;
+  }

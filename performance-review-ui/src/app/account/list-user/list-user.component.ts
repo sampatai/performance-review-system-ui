@@ -1,68 +1,51 @@
-import { Component, computed, effect, OnInit, signal } from '@angular/core';
-import { map, Observable, of, tap } from 'rxjs';
-import { User } from '../../shared/models/accounts/user/User';
+import { Component, inject } from '@angular/core';
+import {
+  catchError,
+  debounce,
+  debounceTime,
+  distinctUntilChanged,
+  of,
+  startWith,
+  switchMap,
+} from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { AccountService } from '../services/account.service';
-import { PaginationComponent } from "../../shared/pagination/pagination.component";
-import { filter } from '../../shared/models/common/filter';
+import { RouterLink } from '@angular/router';
+import { PaginationService } from '../../shared/service/pagination.service';
+import { column } from '../../shared/models/common/column.model';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { PaginationComponent } from '../../shared/component/pagination/pagination.component';
+import { pageList } from '../../shared/models/common/pageList.model';
+import { User } from '../../shared/models/accounts/user/User.model';
 
 @Component({
   selector: 'app-list-user',
-  imports: [CommonModule, PaginationComponent],
+  imports: [CommonModule, PaginationComponent, RouterLink],
   templateUrl: './list-user.component.html',
   styleUrl: './list-user.component.css',
 })
 export class ListUserComponent {
-  users$!: Observable<User[]>;
-  page = signal(1);
-  pageSize = signal(10);
-  search = signal('');
-  sortColumn = signal('');
-  sortDirection = signal<'asc' | 'desc'>('desc');
-  filterParams = computed((): filter => ({
-    pageNumber: this.page(),
-    pageSize: this.pageSize(),
-    searchTerm: this.search(),
-    sortColumn: this.sortColumn(),
-    sortDirection: this.sortDirection(),
-  }));
-  totalRecords = signal(0);
-  
-  colums = [
-    { label: 'First Name', key: 'firstName' },
-    { label: 'Last Name', key: 'lastName' },
-    { label: 'Email', key: 'email' },
+  protected paginationService = inject(PaginationService);
+  protected accountService = inject(AccountService);
+
+  columns: column[] = [
+    { label: 'First Name', key: 'firstName', sortable: true },
+    { label: 'Last Name', key: 'lastName', sortable: true },
+    { label: 'Email', key: 'email', sortable: true },
     { label: 'Team', key: 'team.name' },
     { label: 'Role', key: 'role.name' },
   ];
-  constructor(private accountService: AccountService) {
-    
-    //Whenever params$()
-    // changes → result$() emits → users$
-    //  and total$ get new values from backend.
-    
-    // Reactively call API on state change
-    effect(() => {
-      const params = this.filterParams();
-      this.users$ = this.accountService.getUser(params).pipe(
-        tap(res => this.totalRecords.set(res.totalRecords)),
-        map(res => res.data)
-      );
-    });
-  }
 
-  onPageChange(event: {
-    page: number;
-    search: string;
-    sortColumn: string;
-    sortDirection: 'asc' | 'desc';
-    pagesize: number;
-  }) {
-   
-    this.page.set(event.page);
-    this.pageSize.set(event.pagesize);
-    this.search.set(event.search);
-    this.sortColumn.set(event.sortColumn);
-    this.sortDirection.set(event.sortDirection);
-  }
+  users = toSignal(
+    toObservable(this.paginationService.stateSignal).pipe(
+      debounceTime(300), // Adjust debounce time if needed
+      distinctUntilChanged(),
+      switchMap((state) =>
+        this.accountService.getUser(state).pipe(
+          catchError(() => of({ data: [], totalRecords: 0 })) // graceful fallback
+        )
+      )
+    ),
+    { initialValue: { data: [], totalRecords: 0 } as pageList<User> }
+  );
 }

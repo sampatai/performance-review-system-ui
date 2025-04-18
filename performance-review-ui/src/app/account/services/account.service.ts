@@ -1,15 +1,16 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, model } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
-import { Register } from '../../shared/models/accounts/register/Register';
-import { Login } from '../../shared/models/accounts/Login/Login';
+import { Register } from '../../shared/models/accounts/register/Register.model';
+import { Login } from '../../shared/models/accounts/Login/Login..model';
 import { map } from 'rxjs/operators';
-import { User } from '../../shared/models/accounts/user/User';
+import { User } from '../../shared/models/accounts/user/User.model';
 import { jwtDecode } from 'jwt-decode';
 import { Observable, ReplaySubject } from 'rxjs';
-import { pageList } from '../../shared/models/common/pageList';
-import { filter } from '../../shared/models/common/filter';
+import { pageList } from '../../shared/models/common/pageList.model';
+import { filter } from '../../shared/models/common/filter.model';
+
 @Injectable({
   providedIn: 'root',
 })

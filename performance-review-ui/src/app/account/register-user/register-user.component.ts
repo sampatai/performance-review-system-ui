@@ -10,11 +10,12 @@ import { Team } from '../../shared/Enums/Team';
 import { Role } from '../../shared/Enums/Role';
 import { AccountService } from '../services/account.service';
 import { Router } from '@angular/router';
+import { BreadcrumbComponent } from "../../shared/component/breadcrumb/breadcrumb.component";
 
 @Component({
   selector: 'app-register-user',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, BreadcrumbComponent],
   templateUrl: './register-user.component.html',
   styleUrl: './register-user.component.css',
 })
@@ -51,7 +52,7 @@ export class RegisterUserComponent implements OnInit {
     if (this.registerForm.valid) {
       this.accountService.register(this.registerForm.value).subscribe({
         next: (response: any) => {
-          
+          debugger;
             this.router.navigate(['/staff/list']);
         },
         error: (error) => {
