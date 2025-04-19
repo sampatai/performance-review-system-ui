@@ -1,7 +1,7 @@
 import { nameValue } from "../../common/nameValue.model";
 
-export interface User {
-    staffGuid: string;
+export interface staff {
+    id: string;
     firstName: string;
     lastName: string;
     email: string;

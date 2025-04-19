@@ -1,91 +1,91 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ValidationMessageComponent } from '../../shared/component/validation-message/validation-message.component';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AccountService } from '../services/account.service';
-import { of, switchMap, take } from 'rxjs';
-import { User } from '../../shared/models/accounts/user/User.model';
+import { map, of, switchMap, take } from 'rxjs';
+import { SubmitButtonComponent } from "../../shared/component/submit-button/submit-button.component";
+import { CommonModule } from '@angular/common';
+import { Login } from '../../shared/models/accounts/Login/Login..model';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, ValidationMessageComponent, RouterModule],
+  imports: [
+    ReactiveFormsModule, 
+    CommonModule, 
+    ValidationMessageComponent, 
+    RouterModule, 
+    SubmitButtonComponent
+  ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],  // Fixed typo: 'styleUrl' should be 'styleUrls'
+  styleUrl: './login.component.css'
 })
-export class LoginComponent implements OnInit {
-  loginForm: FormGroup = new FormGroup({});
-  submitted = false;
-  errorMessage: string[] = [];
-  returnUrl: string | null = null;
-  
+export class LoginComponent {
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private accountService = inject(AccountService);
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private accountService: AccountService
-  ) {
-    // Check if the user is already logged in
+  loginForm = this.fb.group({
+    userName: ['', [Validators.required]],
+    password: ['', [Validators.required]]
+  });
+
+  submitted = signal(false);
+  errorMessages = signal<string[]>([]);
+  returnUrl = signal<string | null>(null);
+
+  constructor() {
+    this.checkAuthentication();
+  }
+
+  private checkAuthentication() {
     this.accountService.user$
       .pipe(
         take(1),
-        switchMap((user: User | null) => {
-          if (user) {
-            // If user is already logged in, navigate to the home page
-            this.router.navigateByUrl('/');
-            return of(null); // Return null to complete the observable chain
-          } else {
-            // If no user is logged in, get the returnUrl from the query parameters
-            return this.activatedRoute.queryParamMap.pipe(take(1));
-          }
-        })
+        switchMap(user => user ? this.handleAuthenticatedUser() : this.getReturnUrl())
       )
-      .subscribe({
-        next: (params: any) => {
-          if (params) {
-            this.returnUrl = params.get('returnUrl'); // Set returnUrl to the query param
-          }
-        },
-      });
+      .subscribe();
   }
 
-  ngOnInit(): void {
-    this.initializeForm();
+  private handleAuthenticatedUser() {
+    this.router.navigateByUrl('/');
+    return of(null);
   }
 
-  initializeForm() {
-    this.loginForm = this.formBuilder.group({
-      userName: ['', Validators.required],
-      password: ['', Validators.required],
-    });
+  private getReturnUrl() {
+    return this.route.queryParamMap.pipe(
+      take(1),
+      map(params => this.returnUrl.set(params.get('returnUrl'))))
   }
 
   login() {
-    this.submitted = true;
-    this.errorMessage = [];
+    this.submitted.set(true);
+    this.errorMessages.set([]);
+    
     if (this.loginForm.valid) {
-      // Call login API
-      this.accountService.login(this.loginForm.value).subscribe({
-        next: (_) => {
-                  
-          if (this.returnUrl) {
-            this.router.navigateByUrl(this.returnUrl);
-          } else {
-            this.router.navigateByUrl('/dashboard');
-          }
-        },
-        error: (err) => {
-          this.submitted = false;
-          this.errorMessage.push('Login failed: ' + err.message);
-        }
+      const formValues = this.loginForm.value;
+        const login: Login = {
+            userName: formValues.userName!, 
+            password: formValues.password!,   
+              
+          };
+      this.accountService.login(login).subscribe({
+        next: () => this.navigateAfterLogin(),
+        error: (err) => this.handleLoginError(err)
       });
     }
   }
+
+  private navigateAfterLogin() {
+    const url = this.returnUrl() ?? '/dashboard';
+    this.router.navigateByUrl(url);
+  }
+
+  private handleLoginError(err: any) {
+    this.submitted.set(false);
+    this.errorMessages.set(['Login failed: ' + err.message]);
+  }
+  
 }

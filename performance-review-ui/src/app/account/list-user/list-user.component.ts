@@ -1,11 +1,9 @@
 import { Component, inject } from '@angular/core';
 import {
   catchError,
-  debounce,
   debounceTime,
   distinctUntilChanged,
   of,
-  startWith,
   switchMap,
 } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -16,7 +14,7 @@ import { column } from '../../shared/models/common/column.model';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { PaginationComponent } from '../../shared/component/pagination/pagination.component';
 import { pageList } from '../../shared/models/common/pageList.model';
-import { User } from '../../shared/models/accounts/user/User.model';
+import { staff } from '../../shared/models/accounts/user/userList..model';
 
 @Component({
   selector: 'app-list-user',
@@ -46,6 +44,6 @@ export class ListUserComponent {
         )
       )
     ),
-    { initialValue: { data: [], totalRecords: 0 } as pageList<User> }
+    { initialValue: { data: [], totalRecords: 0 } as pageList<staff> }
   );
 }

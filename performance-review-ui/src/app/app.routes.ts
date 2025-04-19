@@ -11,7 +11,7 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'login'  // Redirect to login if no valid path is found
+    redirectTo: 'login', // Redirect to login if no valid path is found
   },
 
   // Login Layout (can also handle login form)
@@ -21,40 +21,53 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: LoginComponent
-      }
-    ]
+        component: LoginComponent,
+      },
+    ],
   },
 
   // Main Layout (Protected Routes After Login)
   {
-    path: '',  // Protected routes under main layout (will redirect to dashboard)
+    path: '', // Protected routes under main layout (will redirect to dashboard)
     component: MainLayoutComponent,
-    canActivate: [authGuard],  // Protect these routes
+    canActivate: [authGuard], // Protect these routes
     children: [
       {
-        path: '',  // Empty path here means default route after login
+        path: '', // Empty path here means default route after login
         pathMatch: 'full',
-        redirectTo: 'dashboard'  // Default route after login
+        redirectTo: 'dashboard', // Default route after login
       },
       {
-        path: 'dashboard',  // Dashboard route (or any page you want to show post-login)
-        loadComponent: () => import('./dashboard/dashboard.component').then((m) => m.DashboardComponent)  // Lazy loading for dashboard
+        path: 'dashboard', // Dashboard route (or any page you want to show post-login)
+        loadComponent: () =>
+          import('./dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent
+          ), // Lazy loading for dashboard
       },
       {
-        path: 'account/register',  // Registration route
-        component: RegisterUserComponent
+        path: 'account/register', // Registration route
+        component: RegisterUserComponent,
+        title: 'Register User',
       },
       {
-        path: 'staff/list',  // Registration route
-        component: ListUserComponent
-      }
-    ]
+        path: 'staff/list', // Registration route
+        component: ListUserComponent,
+        title: 'List User',
+      },
+      {
+        path: 'account/edit-user/:id',
+        loadComponent: () =>
+          import('./account/edit-user/edit-user.component').then(
+            (m) => m.EditUserComponent
+          ),
+          title: 'Edit User',
+      },
+    ],
   },
 
   // Wildcard Route: Redirect unknown routes to login
   {
     path: '**',
-    redirectTo: 'login'
-  }
+    redirectTo: 'login',
+  },
 ];

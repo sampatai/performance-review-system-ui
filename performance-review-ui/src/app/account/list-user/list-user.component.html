@@ -10,7 +10,10 @@
                 [totalItems]="users().totalRecords || 0"
                 [columns]="columns"
                 [state]="paginationService.stateSignal()"
-                (stateChange)="paginationService.updateState($event)"/>                      
+                [editRouteBase]="'/account/edit-user'"
+                (stateChange)="paginationService.updateState($event)"
+               
+                />                      
         </div>
     </div>
 </div>

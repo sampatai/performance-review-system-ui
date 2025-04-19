@@ -10,6 +10,7 @@ import { jwtDecode } from 'jwt-decode';
 import { Observable, ReplaySubject } from 'rxjs';
 import { pageList } from '../../shared/models/common/pageList.model';
 import { filter } from '../../shared/models/common/filter.model';
+import { staff } from '../../shared/models/accounts/user/userList..model';
 
 @Injectable({
   providedIn: 'root',
@@ -76,8 +77,8 @@ export class AccountService {
       });
   };
 
-  getUser(params: filter): Observable<pageList<User>> {
+  getUser(params: filter): Observable<pageList<staff>> {
   
-    return this.http.post<pageList<User>>(`${environment.appUrl}staff/users`,  params);
+    return this.http.post<pageList<staff>>(`${environment.appUrl}staff/users`,  params);
   }
 }

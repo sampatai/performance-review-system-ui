@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { column } from '../../models/common/column.model';
 import { filter } from '../../models/common/filter.model';
 import { PAGINATION_DEFAULTS } from '../../constants/pagination.constants';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-pagination',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,RouterLink],
   templateUrl: './pagination.component.html',
 })
 export class PaginationComponent {
@@ -16,8 +17,9 @@ export class PaginationComponent {
   columns = input<column[]>([]);
   state = input.required<filter>();
   pageSizeOptions = input(PAGINATION_DEFAULTS.PAGE_SIZE_OPTIONS);
+  editRouteBase=input<string>('/edit');
   stateChange = output<Partial<filter>>();
-
+  
   constructor() {}
 
   get totalPages(): number {
@@ -55,5 +57,8 @@ export class PaginationComponent {
       searchTerm: inputElement.value,
       page: 1,
     });
+  }
+  getEditRoute(item:any):any[]{
+    return [this.editRouteBase,item]
   }
 }

@@ -9,32 +9,36 @@
         <form [formGroup]="loginForm" (ngSubmit)="login()">
           <div class="form-floating mb-3">
             <input formControlName="userName" class="form-control" id="inputuserName" type="email"
-              placeholder="Username (your email address)" [class.is-invalid]="submitted && loginForm.get('userName')?.invalid" />
+              placeholder="Username (your email address)"
+              [class.is-invalid]="submitted() && loginForm.get('userName')?.invalid" />
             <label for="inputuserName">Email address</label>
             <!-- Error Message for Username -->
-            <span class="text-danger" *ngIf="submitted && loginForm.get('userName')?.hasError('required')">
+            <span class="text-danger" *ngIf="submitted() && loginForm.get('userName')?.hasError('required')">
               Username is required
             </span>
           </div>
           <div class="form-floating mb-3">
             <input formControlName="password" class="form-control" id="inputPassword" type="password"
-              placeholder="Password" [class.is-invalid]="submitted && loginForm.get('password')?.invalid" />
+              placeholder="Password" [class.is-invalid]="submitted() && loginForm.get('password')?.invalid" />
             <label for="inputPassword">Password</label>
             <!-- Error Message for Password -->
-            <span class="text-danger" *ngIf="submitted && loginForm.get('password')?.hasError('required')">
+            <span class="text-danger" *ngIf="submitted() && loginForm.get('password')?.hasError('required')">
               Password is required
             </span>
           </div>
 
           <!-- Validation Message for other errors -->
-          <div class="form-floating" *ngIf="errorMessage.length > 0">
-            <app-validation-message [errorMessages]="errorMessage"></app-validation-message>
+          @if(errorMessages.length>0){
+          <div class="form-floating">
+            <app-validation-message [errorMessages]="errorMessages()"></app-validation-message>
           </div>
+          }
+
 
           <!-- Submit Button -->
-          <div class="d-grid mt-4 px-1">
-            <button class="btn btn-primary" [disabled]="loginForm.invalid || submitted" type="submit">Login</button>
-          </div>
+
+          <app-submit-button [label]="'Login'" [loading]="submitted()" disabled="loginForm.invalid" />
+
         </form>
       </div>
     </div>

@@ -1,93 +1,96 @@
-
-<div class="row justify-content-center">
- 
+<div class="row justify-content-center mt-5">
   <div class="col-lg-12">
-    <div class="card shadow-lg border-0 rounded-lg mt-5">
-  
+    <app-breadcrumb />
+
+    <div class="card shadow-lg border-0 rounded-lg">
       <div class="card-body">
         <form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
+
+
+
           <div class="row mb-3">
+            <!-- First Name -->
             <div class="col-md-6">
               <div class="form-floating mb-3 mb-md-0">
-              <input
-                  formControlName="firstName"
-                  class="form-control"
-                  type="text"
-                  placeholder="Enter your first name"
-                  [class.is-invalid]="submitted && registerForm.get('firstName')?.invalid"
-                />
-                <label for="firstName">First name</label>
-                <span class="text-danger" *ngIf="submitted && registerForm.get('firstName')?.hasError('required')">
-                  First name is required
-                </span>
+                <input formControlName="firstName" class="form-control" type="text" placeholder="First name"
+                  [class.is-invalid]="submitted() && registerForm.controls.firstName.invalid" />
+                <label>First name</label>
+                @if (submitted() && registerForm.controls.firstName.hasError('required')) {
+                <div class="invalid-feedback">First name is required</div>
+                }
               </div>
             </div>
+
+            <!-- Last Name -->
             <div class="col-md-6">
               <div class="form-floating">
-                <input
-                  formControlName="lastName"
-                  class="form-control"
-                  type="text"
-                  placeholder="Enter your last name"
-                  [class.is-invalid]="submitted && registerForm.get('lastName')?.invalid"
-                />
-                <label for="lastName">Last name</label>
-                <span class="text-danger" *ngIf="submitted && registerForm.get('lastName')?.hasError('required')">
-                  Last name is required
-                </span>
+                <input formControlName="lastName" class="form-control" type="text" placeholder="Last name"
+                  [class.is-invalid]="submitted() && registerForm.controls.lastName.invalid" />
+                <label>Last name</label>
+                @if (submitted() && registerForm.controls.lastName.hasError('required')) {
+                <div class="invalid-feedback">Last name is required</div>
+                }
               </div>
             </div>
           </div>
 
+          <!-- Email -->
           <div class="form-floating mb-3">
-            <input
-              class="form-control"
-              formControlName="email"
-              type="email"
-              [class.is-invalid]="submitted && registerForm.get('email')?.invalid"
-              placeholder="name@example.com"
-            />
-            <label for="inputEmail">Email address</label>
-            <span class="text-danger" *ngIf="submitted && registerForm.get('email')?.hasError('required')">
-              Email is required
-            </span>
-            <!-- <span class="text-danger" *ngIf="submitted && registerForm.get('email')?.hasError('pattern')">
-              Invalid email address
-            </span> -->
+            <input formControlName="email" class="form-control" type="email" placeholder="Email"
+              [class.is-invalid]="submitted() && registerForm.controls.email.invalid" />
+            <label>Email address</label>
+            @if (submitted() && registerForm.controls.email.hasError('required')) {
+            <div class="invalid-feedback">Email is required</div>
+            }
+            @if (submitted() && registerForm.controls.email.hasError('email')) {
+            <div class="invalid-feedback">Please enter a valid email</div>
+            }
           </div>
 
+          <!-- Team & Role Selection -->
           <div class="row mb-3">
             <div class="col-md-6">
               <div class="form-floating mb-3 mb-md-0">
-                <select class="form-control" id="teamSelect" formControlName="team">
-                  <option [ngValue]="null">Select a Team</option>
-                  <option *ngFor="let team of teams" [ngValue]="team.id">{{ team.name }}</option>
+                <select formControlName="team" class="form-control"
+                  [class.is-invalid]="submitted() && registerForm.controls.team.invalid">
+                  <option [ngValue]="null" disabled>Select Team</option>
+                  @for (team of teams; track team) {
+                  <option [value]="team.id">{{ team.name }}</option>
+                  }
                 </select>
-                <label for="team">Team</label>
-                <span class="text-danger" *ngIf="submitted && registerForm.get('team')?.hasError('required')">
-                  Team selection is required
-                </span>
+                <label>Team</label>
+                @if (submitted() && registerForm.controls.team.hasError('required')) {
+                <div class="invalid-feedback">Team is required</div>
+                }
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="form-floating mb-3 mb-md-0">
-                <select class="form-control" id="role" formControlName="role">
-                  <option [ngValue]="null">Select a Role</option>
-                  <option *ngFor="let role of roles" [ngValue]="role.id">{{ role.name }}</option>
-                </select>
-                <label for="role">Role</label>
-                <span class="text-danger" *ngIf="submitted && registerForm.get('role')?.hasError('required')">
-                  Role selection is required
-                </span>
-              </div>
-            </div>
-          </div>
 
-          <div class="mt-4 mb-0">
-            <div class="d-grid">
-              <button class="btn btn-primary btn-block" type="submit">Create Account</button>
+            <div class="col-md-6">
+              <div class="form-floating">
+                <select formControlName="role" class="form-control"
+                  [class.is-invalid]="submitted() && registerForm.controls.role.invalid">
+                  <option [ngValue]="null" disabled>Select Role</option>
+                  @for (role of roles; track role) {
+                  <option [value]="role.id">{{ role.name }}</option>
+                  }
+                </select>
+                <label>Role</label>
+                @if (submitted() && registerForm.controls.role.hasError('required')) {
+                <div class="invalid-feedback">Role is required</div>
+                }
+              </div>
             </div>
           </div>
+          <!-- Validation Message for other errors -->
+          @if(errorMessages.length>0){
+          <div class="form-floating">
+            <app-validation-message [errorMessages]="errorMessages()"></app-validation-message>
+          </div>
+          }
+          <app-submit-button [label]="'Create Account'" [loading]="submitted()" disabled="registerForm.invalid" />
+
+
+
         </form>
       </div>
     </div>

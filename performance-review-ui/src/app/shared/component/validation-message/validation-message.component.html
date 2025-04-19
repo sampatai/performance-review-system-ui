@@ -1,3 +1,7 @@
-<ul class="text-danger">
-  <li *ngIf="let error of errorMessages">{{ error }}</li>
+@if( errorMessages.length>0){
+<ul class="text-danger list-unstyled">
+  @for (item of errorMessages(); track $index) {
+  <li>{{item}}</li>
+  }
 </ul>
+}
