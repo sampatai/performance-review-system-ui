@@ -2,21 +2,23 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
-import { Register } from '../../shared/models/accounts/register/Register.model';
-import { Login } from '../../shared/models/accounts/Login/Login..model';
+import { register } from '../../shared/models/accounts/register/register.model';
+import { Login } from '../../shared/models/accounts/Login/login.model';
 import { map } from 'rxjs/operators';
-import { User } from '../../shared/models/accounts/user/User.model';
+import { User } from '../../shared/models/accounts/user/user.model';
 import { jwtDecode } from 'jwt-decode';
 import { Observable, ReplaySubject } from 'rxjs';
 import { pageList } from '../../shared/models/common/pageList.model';
 import { filter } from '../../shared/models/common/filter.model';
 import { staff } from '../../shared/models/accounts/user/userList..model';
+import { editRegister } from '../../shared/models/accounts/register/register-edit.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
-  private userSource = new ReplaySubject<User | null>(1);
+  
+  private userSource = new ReplaySubject<User | null>(1);//remembers old values and can replay them to new subscribers.
   user$ = this.userSource.asObservable();
   refreshTokenTimeout: any;
   timeoutId: any;
@@ -33,7 +35,7 @@ export class AccountService {
     const userJson = localStorage.getItem(environment.userKey);
     return userJson ? JSON.parse(userJson) : null;
   }
-  register(model: Register) {
+  register(model: register) {
     return this.http.post(`${environment.appUrl}account/register`, model);
   }
   login(model: Login) {
@@ -80,5 +82,11 @@ export class AccountService {
   getUser(params: filter): Observable<pageList<staff>> {
   
     return this.http.post<pageList<staff>>(`${environment.appUrl}staff/users`,  params);
+  }
+  getUserById(id:any):Observable<editRegister>{
+    return this.http.get<editRegister>(`${environment.appUrl}staff/${id}`);
+  }
+  updateUser(model: editRegister) {
+    return this.http.put(`${environment.appUrl}staff/${model.id}`, model);
   }
 }

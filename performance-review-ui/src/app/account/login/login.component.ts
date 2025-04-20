@@ -6,7 +6,7 @@ import { AccountService } from '../services/account.service';
 import { map, of, switchMap, take } from 'rxjs';
 import { SubmitButtonComponent } from "../../shared/component/submit-button/submit-button.component";
 import { CommonModule } from '@angular/common';
-import { Login } from '../../shared/models/accounts/Login/Login..model';
+import { Login } from '../../shared/models/accounts/Login/login.model';
 
 @Component({
   selector: 'app-login',

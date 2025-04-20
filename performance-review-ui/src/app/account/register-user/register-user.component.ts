@@ -6,9 +6,10 @@ import { Role } from '../../shared/Enums/Role';
 import { AccountService } from '../services/account.service';
 import { Router } from '@angular/router';
 import { BreadcrumbComponent } from "../../shared/component/breadcrumb/breadcrumb.component";
-import { Register } from '../../shared/models/accounts/register/Register.model';
 import { SubmitButtonComponent } from "../../shared/component/submit-button/submit-button.component";
 import { ValidationMessageComponent } from "../../shared/component/validation-message/validation-message.component";
+import { register } from '../../shared/models/accounts/register/register.model';
+import { ErrorHandlingService } from '../../shared/service/error-handler.service';
 
 @Component({
   selector: 'app-register-user',
@@ -21,6 +22,7 @@ export class RegisterUserComponent {
   private formBuilder = inject(FormBuilder);
   private accountService = inject(AccountService);
   private router = inject(Router);
+  private errorHandler=inject(ErrorHandlingService)
 
   // Component State
   submitted = signal(false);
@@ -43,7 +45,7 @@ export class RegisterUserComponent {
       const formValues = this.registerForm.value;
     
     
-    const registerData: Register = {
+    const registerData: register = {
       firstName: formValues.firstName!, 
       lastName: formValues.lastName!,   
       email: formValues.email!,         
@@ -54,11 +56,7 @@ export class RegisterUserComponent {
       this.accountService.register(registerData).subscribe({
         next: () => this.router.navigate(['/staff/list']),
         error: (error) => {
-          this.errorMessages.set(
-            error.error?.errors 
-              ? [...error.error.errors]  // Spread operator to create new array
-              : [error.error || 'An unknown error occurred']  // Fallback message
-          );
+          this.errorHandler.handleHttpError(error, this.errorMessages);
             this.submitted.set(false);
         }
       });

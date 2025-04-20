@@ -36,8 +36,8 @@ export class ListUserComponent {
 
   users = toSignal(
     toObservable(this.paginationService.stateSignal).pipe(
-      debounceTime(300), // Adjust debounce time if needed
-      distinctUntilChanged(),
+      debounceTime(100), // Adjust debounce time if needed
+      distinctUntilChanged(),//avoid unnecessary HTTP calls.
       switchMap((state) =>
         this.accountService.getUser(state).pipe(
           catchError(() => of({ data: [], totalRecords: 0 })) // graceful fallback
@@ -46,4 +46,6 @@ export class ListUserComponent {
     ),
     { initialValue: { data: [], totalRecords: 0 } as pageList<staff> }
   );
+
+  
 }

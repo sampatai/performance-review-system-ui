@@ -87,10 +87,9 @@
             <app-validation-message [errorMessages]="errorMessages()"></app-validation-message>
           </div>
           }
-          <app-submit-button [label]="'Create Account'" [loading]="submitted()" disabled="registerForm.invalid" />
-
-
-
+          <div class="d-flex justify-content-end">
+          <app-submit-button [label]="'Create Account'" [loading]="submitted()" />
+        </div>
         </form>
       </div>
     </div>

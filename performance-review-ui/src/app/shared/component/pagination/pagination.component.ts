@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { column } from '../../models/common/column.model';
 import { filter } from '../../models/common/filter.model';
 import { PAGINATION_DEFAULTS } from '../../constants/pagination.constants';
-import { Router, RouterLink } from '@angular/router';
+import {  RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-pagination',
@@ -59,6 +59,6 @@ export class PaginationComponent {
     });
   }
   getEditRoute(item:any):any[]{
-    return [this.editRouteBase,item]
+    return [this.editRouteBase(),item]
   }
 }
