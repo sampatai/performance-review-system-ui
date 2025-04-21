@@ -2,9 +2,7 @@
     <div class="col-lg-10 col-md-12">
       <div class="card shadow-lg border-0 rounded-lg">
         <div class="card-body p-4">
-          <form [formGroup]="editRegisterForm" (ngSubmit)="saveChanges()" class="needs-validation" novalidate>
-            <input type="hidden" formControlName="id" />
-  
+          <form [formGroup]="editRegisterForm" (ngSubmit)="saveChanges()" class="needs-validation" novalidate>  
             <!-- Row: First Name & Last Name -->
             <div class="row mb-3">
               <div class="col-md-6">
@@ -40,7 +38,6 @@
                 </div>
               </div>
             </div>
-  
             <!-- Email -->
             <div class="mb-3">
               <div class="form-floating">
@@ -50,8 +47,7 @@
                   id="email"
                   placeholder="Email"
                   class="form-control"
-                  [class.is-invalid]="submitted() && editRegisterForm.controls.email.invalid"
-                />
+                  [class.is-invalid]="submitted() && editRegisterForm.controls.email.invalid" />
                 <label for="email">Email</label>
                 @if (submitted() && editRegisterForm.controls.email.hasError('required')) {
                   <div class="invalid-feedback">Email is required</div>

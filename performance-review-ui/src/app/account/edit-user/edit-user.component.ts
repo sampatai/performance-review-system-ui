@@ -10,6 +10,7 @@ import { ValidationMessageComponent } from '../../shared/component/validation-me
 import { SubmitButtonComponent } from '../../shared/component/submit-button/submit-button.component';
 import { of, switchMap } from 'rxjs';
 import { editRegister } from '../../shared/models/accounts/register/register-edit.model';
+import { register } from '../../shared/models/accounts/register/register.model';
 
 @Component({
   selector: 'app-edit-user',
@@ -31,9 +32,9 @@ export class EditUserComponent implements OnInit {
   teams = Team.allTeams;
   roles = Role.allRoles;
   errorMessages = signal<string[]>([]);
+  staffId?: string;
 
   editRegisterForm = this.formBuilder.group({
-    id: [''],
     firstName: ['', [Validators.required]],
     lastName: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
@@ -44,8 +45,8 @@ export class EditUserComponent implements OnInit {
     this.route.paramMap
       .pipe(
         switchMap((params) => {
-          const id = params.get('id');
-          return id ? this.accountService.getUserById(id) : of(null);
+          this.staffId = params.get('id') ?? undefined;
+          return this.staffId ? this.accountService.getUserById(this.staffId) : of(null);
         })
       )
       .subscribe({
@@ -64,12 +65,14 @@ export class EditUserComponent implements OnInit {
    this.submitted.set(true);
    this.errorMessages.set([]);
    if(this.editRegisterForm.valid){
-    const formData=this.editRegisterForm.getRawValue() as editRegister;
-    this.accountService.updateUser(formData).subscribe({
+    const formData=this.editRegisterForm.getRawValue() as register;
+    this.accountService.updateUser(formData,this.staffId).subscribe({
       next:()=>this.router.navigate(['/staff/list'],{
         state:{message:'Updated successfully.'}
       }),
-      
+      error:(err)=>{
+        this.submitted.set(false);
+      }
     })
    }
   }

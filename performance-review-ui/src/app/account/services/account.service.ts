@@ -86,7 +86,7 @@ export class AccountService {
   getUserById(id:any):Observable<editRegister>{
     return this.http.get<editRegister>(`${environment.appUrl}staff/${id}`);
   }
-  updateUser(model: editRegister) {
-    return this.http.put(`${environment.appUrl}staff/${model.id}`, model);
+  updateUser(model: register,id:any) {
+    return this.http.put(`${environment.appUrl}staff/${id}`, model);
   }
 }

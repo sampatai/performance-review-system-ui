@@ -33,7 +33,7 @@ export class RegisterUserComponent {
  registerForm = this.formBuilder.group({
   firstName: ['', [Validators.required]],
   lastName: ['', [Validators.required]],
-  email: ['', [Validators.required, Validators.email]],
+  email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
   team: [null as number | null, [Validators.required]],
   role: [null as number | null, [Validators.required]]
 });
