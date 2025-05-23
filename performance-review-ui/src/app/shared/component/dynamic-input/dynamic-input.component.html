@@ -1,0 +1,75 @@
+@if (isSelect) {
+  <!-- Select Dropdown -->
+  <div class="form-floating mb-3">
+    <select
+      class="form-select"
+      [formControl]="control"
+      [id]="controlName"
+      [disabled]="field().disabled??false"
+    >
+      <option value="" disabled selected>{{ field().placeholder || 'Select an option' }}</option>
+      @for (option of field().options; track option.value) {
+        <option [value]="option.value">{{ option.label }}</option>
+      }
+    </select>
+    <label [for]="controlName">{{ field().label }}</label>
+  </div>
+} @else if (isCheckbox) {
+  <!-- Checkbox -->
+  <div class="form-check mb-3">
+    <input
+      type="checkbox"
+      class="form-check-input"
+      [formControl]="control"
+      [id]="controlName"
+      [disabled]="field().disabled??false"
+    />
+    <label class="form-check-label" [for]="controlName">
+      {{ field().label }}
+    </label>
+  </div>
+} @else {
+  <!-- Text/Number/Email/Date Input -->
+  <div class="form-floating mb-3">
+    <input
+      [type]="field().type"
+      class="form-control"
+      [formControl]="control"
+      [id]="controlName"
+      [placeholder]="field().placeholder || field().label"
+      [disabled]="field().disabled??false"
+      [min]="isNumber ? field().min : null"
+      [max]="isNumber ? field().max : null"
+      [step]="isNumber ? field().step : null"
+      [class.is-invalid]="(submitted() || control.touched) && control.invalid"
+    />
+    <label [for]="controlName">{{ field().label }}</label>
+  </div>
+}
+
+<!-- Validation Messages -->
+@if ((submitted() || control.touched) && control.errors) {
+  <div class="invalid-feedback d-block">
+    @if (control.hasError('required')) {
+      <div>{{ field().label }} is required</div>
+    }
+    @if (control.hasError('email')) {
+      <div>Please enter a valid email address</div>
+    }
+    @if (control.hasError('min')) {
+      <div>Minimum value is {{ control.getError('min').min }}</div>
+    }
+    @if (control.hasError('max')) {
+      <div>Maximum value is {{ control.getError('max').max }}</div>
+    }
+    @if (control.hasError('minlength')) {
+      <div>Minimum length is {{ control.getError('minlength').requiredLength }}</div>
+    }
+    @if (control.hasError('pattern')) {
+      <div>Invalid format</div>
+    }
+    @if (control.hasError('dateInvalid')) {
+      <div>Please enter a valid date</div>
+    }
+  </div>
+}

@@ -12,6 +12,7 @@ import { pageList } from '../../shared/models/common/pageList.model';
 import { filter } from '../../shared/models/common/filter.model';
 import { staff } from '../../shared/models/accounts/user/userList..model';
 import { editRegister } from '../../shared/models/accounts/register/register-edit.model';
+import { manager } from '../../shared/models/accounts/register/manager.model';
 
 @Injectable({
   providedIn: 'root',
@@ -88,5 +89,13 @@ export class AccountService {
   }
   updateUser(model: register,id:any) {
     return this.http.put(`${environment.appUrl}staff/${id}`, model);
+  }
+  getManagers(teamId:number):Observable<manager[]>{
+   return this.http
+      .get<any[]>(`${environment.appUrl}staff/manager/${teamId}`)
+      .pipe(map(m=> m.map(item=>({
+        id: item.id,
+        fullName:item.name
+      }))));
   }
 }
