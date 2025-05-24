@@ -17,7 +17,7 @@ export class PaginationComponent {
   columns = input<column[]>([]);
   state = input.required<filter>();
   pageSizeOptions = input(PAGINATION_DEFAULTS.PAGE_SIZE_OPTIONS);
-  editRouteBase=input<string>('/edit');
+  editRouteBase=input<string>('');
   stateChange = output<Partial<filter>>();
   
   constructor() {}

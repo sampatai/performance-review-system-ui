@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Team } from '../../shared/Enums/Team';
 import { Role } from '../../shared/Enums/Role';
@@ -12,6 +12,7 @@ import { register } from '../../shared/models/accounts/register/register.model';
 import { ErrorHandlingService } from '../../shared/service/error-handler.service';
 import { manager } from '../../shared/models/accounts/register/manager.model';
 import { take } from 'rxjs';
+
 
 @Component({
   selector: 'app-register-user',
@@ -26,7 +27,7 @@ import { take } from 'rxjs';
   templateUrl: './register-user.component.html',
   styleUrl: './register-user.component.css',
 })
-export class RegisterUserComponent {
+export class RegisterUserComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private accountService = inject(AccountService);
   private router = inject(Router);
@@ -55,6 +56,13 @@ export class RegisterUserComponent {
     role: [null as number | null, [Validators.required]],
     managerId: [null as number | null]
   });
+  ngOnInit(): void {
+    this.registerForm.get('team')?.valueChanges
+    .pipe(take(1))
+    .subscribe((teamId) => {
+      this.loadManagers(teamId);
+    });
+  }
   register() {
     this.submitted.set(true);
     this.errorMessages.set([]);
@@ -80,8 +88,8 @@ export class RegisterUserComponent {
       });
     }
   }
-  onTeamChange(): void {
-    const teamId = this.registerForm.get('team')?.value;
+  
+  loadManagers(teamId :number|null): void { 
     this.selectedManager.set(null);
     this.managers.set([]);
     this.loadingManager.set(true);
