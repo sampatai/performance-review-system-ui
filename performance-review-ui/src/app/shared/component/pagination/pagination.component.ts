@@ -33,6 +33,7 @@ export class PaginationComponent {
   }
 
   onSorting(column: string) {
+   
     if (!this.columns().find((c) => c.key === column)?.sortable) return;
     const sortDirection =
       this.state().sortColumn === column && this.state().sortDirection === 'asc'
@@ -61,4 +62,5 @@ export class PaginationComponent {
   getEditRoute(item:any):any[]{
     return [this.editRouteBase(),item]
   }
+
 }
