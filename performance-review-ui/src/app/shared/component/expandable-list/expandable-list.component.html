@@ -6,7 +6,7 @@
         <select class="form-select w-auto" [(ngModel)]="search.pageSize"
             (ngModelChange)="stateChange.emit({pageSize:$any($event),page:1})">
             @for(size of pageSizeOptions; track size){
-            <option [value]="size" {{size}}></option>
+            <option [value]="size" >{{size}}</option>
             }
         </select>
     </div>
@@ -39,9 +39,9 @@
                     <td> {{getItemValue(item,col.key)||'-'}}</td>
                     }
                     <td>
-                        <a class="btn btn-sm btn-outline-primary" [routerLink]="getEditRoute(item.id)">
+                        <!-- <a class="btn btn-sm btn-outline-primary" [routerLink]="getEditRoute(item.id)">
                             <span class="bi bi-pencil-square"></span>
-                        </a>
+                        </a> -->
                     </td>
                 </tr>
                 <!-- Expanded Child Row -->

@@ -1,5 +1,5 @@
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
-import { AccountService } from '../../account/services/account.service';
+import { AccountService } from '../../services/account.service';
 import { inject } from '@angular/core';
 import { map, take } from 'rxjs/operators';
 

@@ -3,7 +3,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Team } from '../../shared/Enums/Team';
 import { Role } from '../../shared/Enums/Role';
-import { AccountService } from '../services/account.service';
+import { AccountService } from '../../services/account.service';
 import { Router } from '@angular/router';
 import { BreadcrumbComponent } from '../../shared/component/breadcrumb/breadcrumb.component';
 import { SubmitButtonComponent } from '../../shared/component/submit-button/submit-button.component';

@@ -1,18 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { environment } from '../../../environments/environment';
-import { register } from '../../shared/models/accounts/register/register.model';
-import { Login } from '../../shared/models/accounts/Login/login.model';
+import { environment } from '../../environments/environment';
+import { register } from '../shared/models/accounts/register/register.model';
+import { Login } from '../shared/models/accounts/Login/login.model';
 import { map } from 'rxjs/operators';
-import { User } from '../../shared/models/accounts/user/user.model';
+import { User } from '../shared/models/accounts/user/user.model';
 import { jwtDecode } from 'jwt-decode';
 import { Observable, ReplaySubject } from 'rxjs';
-import { pageList } from '../../shared/models/common/pageList.model';
-import { filter } from '../../shared/models/common/filter.model';
-import { staff } from '../../shared/models/accounts/user/userList..model';
-import { editRegister } from '../../shared/models/accounts/register/register-edit.model';
-import { manager } from '../../shared/models/accounts/register/manager.model';
+import { pageList } from '../shared/models/common/pageList.model';
+import { filter } from '../shared/models/common/filter.model';
+import { staff } from '../shared/models/accounts/user/userList..model';
+import { editRegister } from '../shared/models/accounts/register/register-edit.model';
+import { manager } from '../shared/models/accounts/register/manager.model';
 
 @Injectable({
   providedIn: 'root',

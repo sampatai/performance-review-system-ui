@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ValidationMessageComponent } from '../../shared/component/validation-message/validation-message.component';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { AccountService } from '../services/account.service';
+import { AccountService } from '../../services/account.service';
 import { map, of, switchMap, take } from 'rxjs';
 import { SubmitButtonComponent } from "../../shared/component/submit-button/submit-button.component";
 import { CommonModule } from '@angular/common';

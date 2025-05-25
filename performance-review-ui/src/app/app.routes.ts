@@ -5,6 +5,7 @@ import { LoginComponent } from './account/login/login.component';
 import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { authGuard } from './shared/guards/auth.guard';
 import { ListUserComponent } from './account/list-user/list-user.component';
+import { EvaluationFormListComponent } from './evaluationform/evaluation-form-list/evaluation-form-list.component';
 
 export const routes: Routes = [
   // Redirect empty path to login if not logged in
@@ -62,6 +63,11 @@ export const routes: Routes = [
           ),
           title: 'Edit User',
       },
+      {
+        path:'evaluationform/template',
+        component:EvaluationFormListComponent,
+        title:'Evaluation Form Template'
+      }
     ],
   },
 

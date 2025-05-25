@@ -7,7 +7,7 @@ import {
   switchMap,
 } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { AccountService } from '../services/account.service';
+import { AccountService } from '../../services/account.service';
 import { RouterLink } from '@angular/router';
 import { PaginationService } from '../../shared/service/pagination.service';
 import { column } from '../../shared/models/common/column.model';
@@ -37,7 +37,7 @@ export class ListUserComponent {
   users = toSignal(
     toObservable(this.paginationService.stateSignal).pipe(
       debounceTime(100), // Adjust debounce time if needed
-      distinctUntilChanged(),//avoid unnecessary HTTP calls.
+      distinctUntilChanged(), //avoid unnecessary HTTP calls.
       switchMap((state) =>
         this.accountService.getUser(state).pipe(
           catchError(() => of({ data: [], totalRecords: 0 })) // graceful fallback
@@ -46,6 +46,4 @@ export class ListUserComponent {
     ),
     { initialValue: { data: [], totalRecords: 0 } as pageList<staff> }
   );
-
-  
 }

@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, switchMap, take } from 'rxjs';
-import { AccountService } from '../../account/services/account.service';
+import { AccountService } from '../../services/account.service';
 
 export const AuthInterceptor: HttpInterceptorFn = (
   req: HttpRequest<any>,
