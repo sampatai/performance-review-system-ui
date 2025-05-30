@@ -35,15 +35,17 @@ export class ListUserComponent {
   ];
 
   users = toSignal(
+    //toObservable() converts it into an RxJS Observable so we can apply operators like debounceTime and switchMap
     toObservable(this.paginationService.stateSignal).pipe(
-      debounceTime(100), // Adjust debounce time if needed
+      debounceTime(100), //Prevents rapid calls when the pagination state changes quickly.
       distinctUntilChanged(), //avoid unnecessary HTTP calls.
-      switchMap((state) =>
+      //Ensures the request only happens if the state (pagination, filter, etc.) actually changes.
+      switchMap((state) =>//Cancels the previous request if a new one comes in
         this.accountService.getUser(state).pipe(
           catchError(() => of({ data: [], totalRecords: 0 })) // graceful fallback
         )
       )
     ),
-    { initialValue: { data: [], totalRecords: 0 } as pageList<staff> }
+    { initialValue: { data: [], totalRecords: 0 } as pageList<staff> } //Converts the observable stream into an Angular Signal.
   );
 }

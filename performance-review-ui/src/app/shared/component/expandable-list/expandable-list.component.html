@@ -6,7 +6,7 @@
         <select class="form-select w-auto" [(ngModel)]="search.pageSize"
             (ngModelChange)="stateChange.emit({pageSize:$any($event),page:1})">
             @for(size of pageSizeOptions; track size){
-            <option [value]="size" >{{size}}</option>
+            <option [value]="size">{{size}}</option>
             }
         </select>
     </div>
@@ -14,6 +14,7 @@
         <table class="table table-hover align-middle">
             <thead class="table-light">
                 <tr>
+                    <th class="small text-center" style="width: 1.5rem;"></th>
                     @for (col of columns; track col.key) {
                     <th [ngClass]="{
                             'sortable-header': col.sortable,
@@ -34,9 +35,21 @@
             </thead>
             <tbody>
                 @for (item of data; track item.id) {
-                <tr (click)="toggleExpand(item.id)" class="cursor-pointer">
+                <tr (click)="toggleExpand(item.id)" class="cursor-pointer"
+                    [class.table-active]="expandedRowId === item.id">
+                    <!-- Expand Icon Cell -->
+                    <td (click)="$event.stopPropagation()">
+                        @if (hasChildren(item)) {
+                        <i class="bi" [ngClass]="{
+               'bi-chevron-down': expandedRowId === item.id,
+               'bi-chevron-right': expandedRowId !== item.id
+             }" class="me-2">
+                        </i>
+                        }
+                    </td>
                     @for (col of columns; track col.key) {
-                    <td> {{getItemValue(item,col.key)||'-'}}</td>
+
+                    <td> {{ getItemValue(item,col.key)||'-'}}</td>
                     }
                     <td>
                         <!-- <a class="btn btn-sm btn-outline-primary" [routerLink]="getEditRoute(item.id)">
@@ -46,8 +59,8 @@
                 </tr>
                 <!-- Expanded Child Row -->
                 @if(expandedRowId===item.id){
-                <tr class="table-secondary">
-                    <td [attr.colspan]="columns.length + 1">
+                <tr class="table table-sm">
+                    <td [attr.colspan]="columns.length + 2">
                         <table class="table table-sm table-bordered mb-0">
                             <thead>
                                 <tr>
@@ -75,26 +88,26 @@
         </table>
     </div>
     @if (totalPageNumber > 1) {
-        <nav aria-label="Page navigation" class="mt-4">
-          <ul class="pagination justify-content-center mb-0">
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center mb-0">
             <li class="page-item" [class.disabled]="search.page === 1">
-              <button class="page-link" (click)="onPageChange(search.page - 1)">
-                <span aria-hidden="true">&laquo;</span>
-              </button>
+                <button class="page-link" (click)="onPageChange(search.page - 1)">
+                    <span aria-hidden="true">&laquo;</span>
+                </button>
             </li>
-      
+
             <li class="page-item disabled">
-              <span class="page-link">
-                Page {{ search.page }} of {{ totalPageNumber }}
-              </span>
+                <span class="page-link">
+                    Page {{ search.page }} of {{ totalPageNumber }}
+                </span>
             </li>
-      
+
             <li class="page-item" [class.disabled]="search.page === totalPageNumber">
-              <button class="page-link" (click)="onPageChange(search.page + 1)">
-                <span aria-hidden="true">&raquo;</span>
-              </button>
+                <button class="page-link" (click)="onPageChange(search.page + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                </button>
             </li>
-          </ul>
-        </nav>
-        }
+        </ul>
+    </nav>
+    }
 </div>

@@ -18,6 +18,9 @@ export class PaginationComponent {
   state = input.required<filter>();
   pageSizeOptions = input(PAGINATION_DEFAULTS.PAGE_SIZE_OPTIONS);
   editRouteBase=input<string>('');
+
+  // Emits changes to the filter state (e.g., sort, search, pagination)
+// Partial<filter> allows sending only the updated parts
   stateChange = output<Partial<filter>>();
   
   constructor() {}
@@ -27,18 +30,25 @@ export class PaginationComponent {
     return pageSize === 0 ? 1 : Math.ceil(this.totalItems() / pageSize);
   }
   onChangePage(page: number) {
+    //triggers an event that the parent component can listen to.
+      //It sends an object { page } (short for { page: page }) to the parent.
+      //The parent can then react to this change (e.g., fetch new data for the next page).
     if (page >= 1 && page <= this.totalPages) {
       this.stateChange.emit({ page: page });
     }
   }
 
   onSorting(column: string) {
-   
+   // Check if the column is defined as sortable in the columns array
     if (!this.columns().find((c) => c.key === column)?.sortable) return;
+    // Determine the new sort direction:
+  // - If the same column is clicked again and it was 'asc', toggle to 'desc'
+  // - Otherwise, set to 'asc' (default)
     const sortDirection =
       this.state().sortColumn === column && this.state().sortDirection === 'asc'
         ? 'desc'
         : 'asc';
+    // Emit the new sorting state to the parent component or listener
     this.stateChange.emit({
       sortColumn: column,
       sortDirection: sortDirection,
