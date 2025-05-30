@@ -33,8 +33,14 @@ export class AccountService {
   }
 
   private loadUserFromLocalStorage(): User | null {
+    debugger;
     const userJson = localStorage.getItem(environment.userKey);
-    return userJson ? JSON.parse(userJson) : null;
+    if (!userJson) return null;
+
+    const parsedUser: User = JSON.parse(userJson);
+    const decoded: any = jwtDecode(parsedUser.jwt);
+    parsedUser.role = decoded.role; 
+    return parsedUser;
   }
   register(model: register) {
     return this.http.post(`${environment.appUrl}account/register`, model);
@@ -45,8 +51,11 @@ export class AccountService {
       .post<User>(`${environment.appUrl}account/login`, model)
       .pipe(
         map((user: User) => {
+          debugger;
           if (user && user.jwt) {
-            this.setUser(user);
+          const decoded: any = jwtDecode(user.jwt);
+           user.role = decoded.role; 
+          this.setUser(user);
           }
         })
       );

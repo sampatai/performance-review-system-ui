@@ -1,79 +1,98 @@
 import { Routes } from '@angular/router';
-import { RegisterUserComponent } from './account/register-user/register-user.component';
-import { LoginLayoutComponent } from './login-layout/login-layout.component';
-import { LoginComponent } from './account/login/login.component';
-import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { authGuard } from './shared/guards/auth.guard';
-import { ListUserComponent } from './account/list-user/list-user.component';
-import { EvaluationFormListComponent } from './evaluationform/evaluation-form-list/evaluation-form-list.component';
+import { ROUTES } from './shared/constants/route.constants.service';
 
 export const routes: Routes = [
-  // Redirect empty path to login if not logged in
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'login', // Redirect to login if no valid path is found
+    redirectTo: ROUTES.LOGIN,
   },
-
-  // Login Layout (can also handle login form)
   {
-    path: 'login',
-    component: LoginLayoutComponent,
+    path: ROUTES.LOGIN,
+    loadComponent: () =>
+      import('./login-layout/login-layout.component').then(m => m.LoginLayoutComponent),
     children: [
       {
         path: '',
-        component: LoginComponent,
+        loadComponent: () =>
+          import('./account/login/login.component').then(m => m.LoginComponent),
       },
     ],
   },
-
-  // Main Layout (Protected Routes After Login)
   {
-    path: '', // Protected routes under main layout (will redirect to dashboard)
-    component: MainLayoutComponent,
-    canActivate: [authGuard], // Protect these routes
+    path: '',
+     data: { roles: ['Admin','Manager'], title: 'Dashboard' },
+
+    loadComponent: () =>
+      import('./main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    canActivate: [authGuard],
     children: [
       {
-        path: '', // Empty path here means default route after login
+        path: '',
         pathMatch: 'full',
-        redirectTo: 'dashboard', // Default route after login
+        redirectTo: ROUTES.DASHBOARD,
       },
       {
-        path: 'dashboard', // Dashboard route (or any page you want to show post-login)
+        path: ROUTES.DASHBOARD,
+        data: { roles: ['Admin','Manager'], title: 'Dashboard' },
+        
         loadComponent: () =>
-          import('./dashboard/dashboard.component').then(
-            (m) => m.DashboardComponent
-          ), // Lazy loading for dashboard
+          import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
       },
       {
-        path: 'account/register', // Registration route
-        component: RegisterUserComponent,
-        title: 'Register User',
-      },
-      {
-        path: 'staff/list', // Registration route
-        component: ListUserComponent,
-        title: 'List User',
-      },
-      {
-        path: 'account/edit-user/:id',
+        path: ROUTES.ACCOUNT.REGISTER,
+        data: { roles: ['Admin','Manager'], title: 'Register User' },
+
         loadComponent: () =>
-          import('./account/edit-user/edit-user.component').then(
-            (m) => m.EditUserComponent
+          import('./account/register-user/register-user.component').then(m => m.RegisterUserComponent),
+      },
+      {
+        path: ROUTES.STAFF,
+        data: { roles:['Admin','Manager'], title: 'List Staff' },
+
+        loadComponent: () =>
+          import('./account/list-user/list-user.component').then(m => m.ListUserComponent),
+      },
+      {
+        path: ROUTES.ACCOUNT.EDIT,
+        data: { roles: ['Admin','Manager'], title: 'Edit User' },
+
+        loadComponent: () =>
+          import('./account/edit-user/edit-user.component').then(m => m.EditUserComponent),
+      },
+      {
+        
+        path: ROUTES.EVALUATION_FORM.TEMPLATE,
+        data: { roles: ['Admin','Manager'], title: 'Template List' },
+
+        loadComponent: () =>
+          import('./evaluationform/evaluation-form-list/evaluation-form-list.component').then(
+            m => m.EvaluationFormListComponent
           ),
-          title: 'Edit User',
       },
       {
-        path:'evaluationform/template',
-        component:EvaluationFormListComponent,
-        title:'Evaluation Form Template'
-      }
+        path: ROUTES.EVALUATION_FORM.CREATE,
+        data: { roles: ['Admin','Manager'], title: 'Create Evaluation Form' },
+
+        loadComponent: () =>
+          import('./evaluationform/create-evaluation-form/create-evaluation-form.component').then(
+            m => m.CreateEvaluationFormComponent
+          ),
+      },
+      {
+        path: ROUTES.EVALUATION_FORM.EDIT,
+        data: { roles: ['Admin','Manager'], title: 'Edit Evaluation Form' },
+
+        loadComponent: () =>
+          import('./evaluationform/edit-evaluation-form/edit-evaluation-form.component').then(
+            m => m.EditEvaluationFormComponent
+          ),
+      },
     ],
   },
-
-  // Wildcard Route: Redirect unknown routes to login
   {
     path: '**',
-    redirectTo: 'login',
+    redirectTo: ROUTES.LOGIN,
   },
 ];

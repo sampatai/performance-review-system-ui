@@ -7,13 +7,23 @@ export const authGuard: CanActivateFn = (next: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) => {
   const accountService = inject(AccountService);
   const router = inject(Router);
+   const allowedRoles = next.data?.['roles'] as string[] | undefined;
   return accountService.user$.pipe(
     take(1),
     map(user => {
       const isAuthenticated = !!user;
-      if (isAuthenticated) return true;
-      router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
-      return false;
+      if (!isAuthenticated) {
+        router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+        return false;
+      }
+      //  No role restriction on route
+      if (!allowedRoles || allowedRoles.length === 0) return true;
+ //Check if user role matches
+      if (allowedRoles.includes(user.role)) return true;
+      //Role mismatch → redirect to unauthorized
+      router.navigate(['/unauthorized']);
+      return false; 
+
     })
   );
 };
