@@ -1,0 +1,19 @@
+@if(control() && control()?.invalid &&(control()?.dirty || control()?.touched)){
+<div class="text-danger text-sm mt-1">
+    @if(control()?.errors?.['required']){
+    <span>This field is required.</span>
+    }
+    @if(control()?.errors?.['email']){
+    <span>Please enter a valid email address.</span>
+    }
+    @if (control()?.errors?.['minlength']) {
+    <div>Minimum length not met.</div>
+    }
+    @if (control()?.errors?.['maxlength']) {
+    <div>Maximum length exceeded.</div>
+    }
+    @if (control()?.errors?.['pattern']) {
+    <div>Invalid format.</div>
+    }
+</div>
+}

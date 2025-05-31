@@ -45,6 +45,7 @@
             @if (submitted() && registerForm.controls.email.hasError('email')) {
             <div class="invalid-feedback">Please enter a valid email</div>
             }
+            
           </div>
 
           <!-- Team & Role Selection -->
@@ -78,6 +79,22 @@
                 @if (submitted() && registerForm.controls.role.hasError('required')) {
                 <div class="invalid-feedback">Role is required</div>
                 }
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="form-floating mb-3 mb-md-0">
+                <select formControlName="managerId" class="form-control"
+                [(ngModel)]="selectedManager"
+                [disabled]=" loadingManager()">
+                  <option [ngValue]="null" disabled>Select manager</option>
+                  @for (m of managers(); track m) {
+                  <option [value]="m.id">{{ m.fullName }}</option>
+                  }
+                </select>
+                <label>Manager</label>
+                
               </div>
             </div>
           </div>

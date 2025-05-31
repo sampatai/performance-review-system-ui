@@ -1,5 +1,6 @@
 export const environment = {
-    appUrl: 'https://localhost:44393/api/',
+    appUrl: 'https://localhost:7127/api/',
     userKey:'performanceAppUser'
+    
     
 };

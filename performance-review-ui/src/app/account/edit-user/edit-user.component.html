@@ -1,119 +1,108 @@
 <div class="row justify-content-center mt-5">
-    <div class="col-lg-10 col-md-12">
-      <div class="card shadow-lg border-0 rounded-lg">
-        <div class="card-body p-4">
-          <form [formGroup]="editRegisterForm" (ngSubmit)="saveChanges()" class="needs-validation" novalidate>  
-            <!-- Row: First Name & Last Name -->
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <div class="form-floating">
-                  <input
-                    type="text"
-                    formControlName="firstName"
-                    id="firstName"
-                    placeholder="First Name"
-                    class="form-control"
-                    [class.is-invalid]="submitted() && editRegisterForm.controls.firstName.invalid"
-                  />
-                  <label for="firstName">First Name</label>
-                  @if (submitted() && editRegisterForm.controls.firstName.hasError('required')) {
-                    <div class="invalid-feedback">First name is required</div>
-                  }
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-floating">
-                  <input
-                    type="text"
-                    formControlName="lastName"
-                    id="lastName"
-                    placeholder="Last Name"
-                    class="form-control"
-                    [class.is-invalid]="submitted() && editRegisterForm.controls.lastName.invalid"
-                  />
-                  <label for="lastName">Last Name</label>
-                  @if (submitted() && editRegisterForm.controls.lastName.hasError('required')) {
-                    <div class="invalid-feedback">Last name is required</div>
-                  }
-                </div>
-              </div>
-            </div>
-            <!-- Email -->
-            <div class="mb-3">
+  <div class="col-lg-10 col-md-12">
+    <div class="card shadow-lg border-0 rounded-lg">
+      <div class="card-body p-4">
+        <form [formGroup]="editRegisterForm" (ngSubmit)="saveChanges()" class="needs-validation" novalidate>
+          <!-- Row: First Name & Last Name -->
+          <div class="row mb-3">
+            <div class="col-md-6">
               <div class="form-floating">
-                <input
-                  type="email"
-                  formControlName="email"
-                  id="email"
-                  placeholder="Email"
+                <input type="text" formControlName="firstName" id="firstName" placeholder="First Name"
                   class="form-control"
-                  [class.is-invalid]="submitted() && editRegisterForm.controls.email.invalid" />
-                <label for="email">Email</label>
-                @if (submitted() && editRegisterForm.controls.email.hasError('required')) {
-                  <div class="invalid-feedback">Email is required</div>
-                }
-                @if (submitted() && editRegisterForm.controls.email.hasError('email')) {
-                  <div class="invalid-feedback">Please enter a valid email</div>
+                  [class.is-invalid]="submitted() && editRegisterForm.controls.firstName.invalid" />
+                <label for="firstName">First Name</label>
+                @if (submitted() && editRegisterForm.controls.firstName.hasError('required')) {
+                <div class="invalid-feedback">First name is required</div>
                 }
               </div>
             </div>
-  
-            <!-- Row: Team & Role -->
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <div class="form-floating">
-                  <select
-                    formControlName="team"
-                    id="team"
-                    class="form-select"
-                    [class.is-invalid]="submitted() && editRegisterForm.controls.team.invalid"
-                  >
-                    <option [ngValue]="null" disabled>Select Team</option>
-                    @for (team of teams; track team.id) {
-                      <option [ngValue]="team.id">{{ team.name }}</option>
-                    }
-                  </select>
-                  <label for="team">Team</label>
-                  @if (submitted() && editRegisterForm.controls.team.hasError('required')) {
-                    <div class="invalid-feedback">Team is required</div>
-                  }
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-floating">
-                  <select
-                    formControlName="role"
-                    id="role"
-                    class="form-select"
-                    [class.is-invalid]="submitted() && editRegisterForm.controls.role.invalid"
-                  >
-                    <option [ngValue]="null" disabled>Select Role</option>
-                    @for (role of roles; track role.id) {
-                      <option [ngValue]="role.id">{{ role.name }}</option>
-                    }
-                  </select>
-                  <label for="role">Role</label>
-                  @if (submitted() && editRegisterForm.controls.role.hasError('required')) {
-                    <div class="invalid-feedback">Role is required</div>
-                  }
-                </div>
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input type="text" formControlName="lastName" id="lastName" placeholder="Last Name" class="form-control"
+                  [class.is-invalid]="submitted() && editRegisterForm.controls.lastName.invalid" />
+                <label for="lastName">Last Name</label>
+                @if (submitted() && editRegisterForm.controls.lastName.hasError('required')) {
+                <div class="invalid-feedback">Last name is required</div>
+                }
               </div>
             </div>
-  
-            <!-- Custom Validation Message -->
-            @if (errorMessages().length > 0) {
-              <div class="mb-3">
-                <app-validation-message [errorMessages]="errorMessages()"></app-validation-message>
-              </div>
-            }
-  
-            <!-- Submit Button -->
-            <div class="d-flex justify-content-end">
-              <app-submit-button [label]="'Update'" [loading]="submitted()"></app-submit-button>
+          </div>
+          <!-- Email -->
+          <div class="mb-3">
+            <div class="form-floating">
+              <input type="email" formControlName="email" id="email" placeholder="Email" class="form-control"
+                [class.is-invalid]="submitted() && editRegisterForm.controls.email.invalid" />
+              <label for="email">Email</label>
+              @if (submitted() && editRegisterForm.controls.email.hasError('required')) {
+              <div class="invalid-feedback">Email is required</div>
+              }
+              @if (submitted() && editRegisterForm.controls.email.hasError('email')) {
+              <div class="invalid-feedback">Please enter a valid email</div>
+              }
             </div>
-          </form>
-        </div>
+          </div>
+
+          <!-- Row: Team & Role -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="form-floating">
+                <select formControlName="team" id="team"  class="form-select"
+                  [class.is-invalid]="submitted() && editRegisterForm.controls.team.invalid">
+                  <option [ngValue]="null" disabled>Select Team</option>
+                  @for (team of teams; track team.id) {
+                  <option [ngValue]="team.id">{{ team.name }}</option>
+                  }
+                </select>
+                <label for="team">Team</label>
+                @if (submitted() && editRegisterForm.controls.team.hasError('required')) {
+                <div class="invalid-feedback">Team is required</div>
+                }
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-floating">
+                <select formControlName="role" id="role" class="form-select"
+                  [class.is-invalid]="submitted() && editRegisterForm.controls.role.invalid">
+                  <option [ngValue]="null" disabled>Select Role</option>
+                  @for (role of roles; track role.id) {
+                  <option [ngValue]="role.id">{{ role.name }}</option>
+                  }
+                </select>
+                <label for="role">Role</label>
+                @if (submitted() && editRegisterForm.controls.role.hasError('required')) {
+                <div class="invalid-feedback">Role is required</div>
+                }
+              </div>
+            </div>
+          </div>
+          <!-- Team & Role Selection -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="form-floating mb-3 mb-md-0">
+                <select formControlName="managerId" class="form-control" [(ngModel)]="selectManager"
+                  [disabled]="loadingManager()">
+                  <option [ngValue]="null" disabled>Select Manager</option>
+                  @for (m of managers(); track m) {
+                  <option [value]="m.id">{{m.fullName}}</option>
+                  }
+                  <option *ngIf="!loadingManager() && managers().length === 0" disabled>No managers available</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- Custom Validation Message -->
+          @if (errorMessages().length > 0) {
+          <div class="mb-3">
+            <app-validation-message [errorMessages]="errorMessages()"></app-validation-message>
+          </div>
+          }
+
+          <!-- Submit Button -->
+          <div class="d-flex justify-content-end">
+            <app-submit-button [label]="'Update'" [loading]="submitted()"></app-submit-button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-  
+</div>

@@ -3,5 +3,6 @@ export interface register{
     lastName:string;
     email:string;
     team:number;
-    role:number
+    role:number;
+    managerId?:number | null;
 }
