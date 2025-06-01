@@ -1,0 +1,75 @@
+<div [formGroup]="questionForm" class="p-3 border rounded shadow-sm mb-4">
+    <!-- Question Text -->
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Question Text</label>
+        <input formControlName="question" class="form-control" [class.is-invalid]="validate('question')">
+        @if (validate('text')) {
+        <div class="invalid-feedback">Question text is required</div>
+        }
+    </div>
+    <!-- Question Type & Required (two columns in one row) -->
+    <div class="row mb-3 align-items-center">
+  <!-- Question Type Dropdown -->
+  <div class="col-md-8">
+    <label class="form-label fw-semibold">Question Type *</label>
+    <select formControlName="questionType" (change)="onTypeChange()" class="form-select">
+      <option [ngValue]="null"></option>
+      @for (type of questionTypes; track type.id) {
+        <option [ngValue]="type.id">{{ type.name }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- Required Checkbox -->
+  <div class="col-md-4 d-flex align-items-end pt-3">
+    <div class="form-check">
+      <input type="checkbox" formControlName="isRequired" class="form-check-input"
+        id="required-{{ questionForm.value.id }}" />
+      <label class="form-check-label" for="required-{{ questionForm.value.id }}">
+        Required
+      </label>
+    </div>
+  </div>
+</div>
+    <!-- Rating Scale Section -->
+    @if(showOptionSelection){
+    <div class="mb-3">
+        <label class="form-label">Options</label>
+        <div formArrayName="options" class="option-list">
+            @for (option of options.controls; track option.value.id; let i = $index) {
+            <div [formGroupName]="i" class="option-item mb-2">
+                <div class="input-group">
+                    <input formControlName="option" class="form-control" [class.is-invalid]="validateOptions(i)" />
+                    <button type="button" class="btn btn-outline-danger" (click)="removeOption(i)">
+                        &times;
+                    </button>
+                </div>
+                @if (validateOptions(i)) {
+                <div class="invalid-feedback">Option text is required</div>
+                }
+            </div>
+            }
+             <button type="button" class="btn btn-outline-primary btn-sm"
+                    (click)="addOption()">
+              + Add Option
+            </button>
+        </div>
+
+    </div>
+    }
+ <!-- Rating Scale Section -->
+  <div *ngIf="showRatingSection" class="mb-3">
+    <label class="form-label">Rating Scale</label>
+    <div class="row g-2">
+      <div class="col">
+        <label>Min Value</label>
+        <input type="number" formControlName="ratingMin" class="form-control" min="1" max="10" />
+      </div>
+      <div class="col">
+        <label>Max Value</label>
+        <input type="number" formControlName="ratingMax" class="form-control" min="1" max="10" />
+      </div>
+    </div>
+    <div *ngIf="showRatingError()" class="invalid-feedback d-block">Max value must be greater than min value</div>
+  </div>
+</div>

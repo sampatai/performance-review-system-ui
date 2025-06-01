@@ -31,14 +31,16 @@
                     </th>
 
                     }
+                    <th class="small text-center"></th>
+
                 </tr>
             </thead>
             <tbody>
                 @for (item of data; track item.id) {
-                <tr (click)="toggleExpand(item.id)" class="cursor-pointer"
+                <tr  class="cursor-pointer"
                     [class.table-active]="expandedRowId === item.id">
                     <!-- Expand Icon Cell -->
-                    <td (click)="$event.stopPropagation()">
+                    <td (click)="toggleExpand(item.id)">
                         @if (hasChildren(item)) {
                         <i class="bi" [ngClass]="{
                'bi-chevron-down': expandedRowId === item.id,
@@ -52,9 +54,9 @@
                     <td> {{ getItemValue(item,col.key)||'-'}}</td>
                     }
                     <td>
-                        <!-- <a class="btn btn-sm btn-outline-primary" [routerLink]="getEditRoute(item.id)">
+                        <a class="btn btn-sm btn-outline-primary" [routerLink]="getEditRoute(item.id)">
                             <span class="bi bi-pencil-square"></span>
-                        </a> -->
+                        </a>
                     </td>
                 </tr>
                 <!-- Expanded Child Row -->

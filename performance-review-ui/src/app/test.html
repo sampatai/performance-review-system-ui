@@ -1,0 +1,78 @@
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Header -->
+      <div class="mb-4">
+        <h2 class="card-title">{{ formId ? 'Edit' : 'Create' }} Evaluation Form</h2>
+        <p class="text-muted">Configure your evaluation form questions and settings</p>
+      </div>
+
+      <!-- Form Fields -->
+      <div class="mb-4">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Form Name *</label>
+            <input formControlName="name" class="form-control" [class.is-invalid]="showError('name')">
+            @if (showError('name')) {
+              <div class="invalid-feedback">Form name is required</div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Description</label>
+            <textarea formControlName="description" class="form-control" rows="1"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Questions Accordion -->
+      <div class="mb-4">
+        <div class="d-flex justify-content-between mb-3">
+          <h3 class="h5">Questions</h3>
+          <button type="button" class="btn btn-primary btn-sm" (click)="addQuestion()">+ Add Question</button>
+        </div>
+
+        <div class="accordion" id="questionsAccordion">
+          @for (question of questions.controls; track question.value.id; let i = $index) {
+            <div class="accordion-item mb-3">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse"
+                        [attr.data-bs-target]="'#question-' + question.value.id"
+                        aria-expanded="false"
+                        [attr.aria-controls]="'question-' + question.value.id">
+                  Question {{ i + 1 }}: {{ question.value.text || 'New Question' }}
+                </button>
+              </h2>
+              <div [id]="'question-' + question.value.id"
+                   class="accordion-collapse collapse"
+                   [attr.data-bs-parent]="'#questionsAccordion'">
+                <div class="accordion-body pt-3">
+                  <app-question
+                    [questionForm]="question"
+                    (typeChanged)="onQuestionTypeChange($event, question)">
+                  </app-question>
+                  <div class="text-end mt-2">
+                    <button type="button" class="btn btn-danger btn-sm" (click)="removeQuestion(i)">
+                      Remove Question
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="d-flex justify-content-between border-top pt-3">
+        <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid || submitting">
+          @if (submitting) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          {{ formId ? 'Update' : 'Create' }} Form
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

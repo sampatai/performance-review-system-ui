@@ -4,10 +4,11 @@ import { filter } from '../../models/common/filter.model';
 import { PAGINATION_DEFAULTS } from '../../constants/pagination.constants';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-expandable-list',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,RouterLink],
   standalone: true,
   templateUrl: './expandable-list.component.html',
   styleUrl: './expandable-list.component.css',
