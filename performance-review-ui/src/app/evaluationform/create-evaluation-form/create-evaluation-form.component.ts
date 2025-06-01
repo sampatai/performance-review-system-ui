@@ -14,10 +14,11 @@ import { InputValidationMessageComponent } from '../../shared/component/input-va
 import { question } from '../../shared/models/EvaluationForm/question.model';
 import { questionType } from '../../shared/Enums/question-type.enum';
 import { QuestionComponent } from "../question/question.component";
+import { SubmitButtonComponent } from "../../shared/component/submit-button/submit-button.component";
 
 @Component({
   selector: 'app-create-evaluation-form',
-  imports: [CommonModule, ReactiveFormsModule, InputValidationMessageComponent, QuestionComponent],
+  imports: [CommonModule, ReactiveFormsModule, InputValidationMessageComponent, QuestionComponent, SubmitButtonComponent],
   templateUrl: './create-evaluation-form.component.html',
   styleUrl: './create-evaluation-form.component.css',
 })

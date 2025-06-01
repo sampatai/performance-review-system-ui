@@ -40,7 +40,7 @@
                         </div>
 
                         <div class="accordion" id="questionsAccordion">
-                            @for (question of questions.controls; track question.value.id; let i = $index) {
+                            @for (question of questions.controls; track question; let i = $index) {
                             <div class="accordion-item mb-3">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -67,7 +67,11 @@
                             }
                         </div>
                     </div>
-                    
+                    <div class="position-sticky bg-white py-3" style="bottom: 0; z-index: 1030;">
+                        <div class="d-flex justify-content-end">
+                            <app-submit-button [label]="'Create'" [loading]="submitted()" />
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
