@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Team } from '../../shared/Enums/Team';
 import { Role } from '../../shared/Enums/Role';
 import { AccountService } from '../../services/account.service';
@@ -45,17 +45,39 @@ export class RegisterUserComponent implements OnInit {
   selectedManager = signal<manager | null>(null);
 
   // Form Group with Type Safety
-  registerForm = this.formBuilder.group({
-    firstName: ['', [Validators.required]],
-    lastName: ['', [Validators.required]],
-    email: [
-      '',
-      [Validators.required, Validators.email],
-    ],
-    team: [null as number | null, [Validators.required]],
-    role: [null as number | null, [Validators.required]],
-    managerId: [null as number | null]
+  registerForm: FormGroup<{
+  firstName: FormControl<string>;
+  lastName: FormControl<string>;
+  email: FormControl<string>;
+  team: FormControl<number>;
+  role: FormControl<number>;
+  managerId: FormControl<number | null>; 
+}>;
+constructor() {
+  this.registerForm = this.formBuilder.group({
+    firstName: new FormControl('', { 
+      validators: [Validators.required], 
+      nonNullable: true 
+    }),
+    lastName: new FormControl('', { 
+      validators: [Validators.required], 
+      nonNullable: true 
+    }),
+    email: new FormControl('', { 
+      validators: [Validators.required, Validators.email], 
+      nonNullable: true 
+    }),
+    team: new FormControl(0, { 
+      validators: [Validators.required], 
+      nonNullable: true 
+    }),
+    role: new FormControl(0, { 
+      validators: [Validators.required], 
+      nonNullable: true 
+    }),
+    managerId: new FormControl<number | null>(null),
   });
+}
   ngOnInit(): void {
     this.registerForm.get('team')?.valueChanges
     .pipe(take(1))
@@ -68,16 +90,7 @@ export class RegisterUserComponent implements OnInit {
     this.errorMessages.set([]);
 
     if (this.registerForm.valid) {
-      const formValues = this.registerForm.value;
-
-      const registerData: register = {
-        firstName: formValues.firstName!,
-        lastName: formValues.lastName!,
-        email: formValues.email!,
-        team: Number(formValues.team),
-        role: Number(formValues.role),
-        managerId: formValues.managerId !== null ? Number(formValues.managerId) : null
-      };
+      const registerData: register = this.registerForm.getRawValue();
 
       this.accountService.register(registerData).subscribe({
         next: () => this.router.navigate(['/staff/list']),

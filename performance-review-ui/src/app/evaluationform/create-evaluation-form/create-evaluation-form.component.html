@@ -43,13 +43,15 @@
                             @for (question of questions.controls; track question; let i = $index) {
                             <div class="accordion-item mb-3">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        [attr.data-bs-target]="'#question-' +i" aria-expanded="false"
-                                        [attr.aria-controls]="'question-' + i">
+                                    <button class="accordion-button"
+                                        [ngClass]="{ collapsed: activeQuestionIndex !== i }" type="button"
+                                        (click)="toggleAccordion(i)" [attr.aria-expanded]="activeQuestionIndex === i"
+                                        [attr.data-bs-target]="'#question-' + i" [attr.aria-controls]="'question-' + i">
                                         Question {{ i + 1 }}: {{ question.value.text || 'New Question' }}
                                     </button>
                                 </h2>
                                 <div [id]="'question-' + i" class="accordion-collapse collapse"
+                                    [class.show]="activeQuestionIndex === i"
                                     [attr.data-bs-parent]="'#questionsAccordion'">
                                     <div class="accordion-body pt-3">
                                         <app-question [questionForm]="question"

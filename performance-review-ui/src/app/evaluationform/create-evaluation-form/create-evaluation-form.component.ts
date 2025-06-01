@@ -13,12 +13,19 @@ import {
 import { InputValidationMessageComponent } from '../../shared/component/input-validation-message/input-validation-message.component';
 import { question } from '../../shared/models/EvaluationForm/question.model';
 import { questionType } from '../../shared/Enums/question-type.enum';
-import { QuestionComponent } from "../question/question.component";
-import { SubmitButtonComponent } from "../../shared/component/submit-button/submit-button.component";
+import { QuestionComponent } from '../question/question.component';
+import { SubmitButtonComponent } from '../../shared/component/submit-button/submit-button.component';
+import { createEvaluationForm } from '../../shared/models/EvaluationForm/evaluationform.model';
 
 @Component({
   selector: 'app-create-evaluation-form',
-  imports: [CommonModule, ReactiveFormsModule, InputValidationMessageComponent, QuestionComponent, SubmitButtonComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputValidationMessageComponent,
+    QuestionComponent,
+    SubmitButtonComponent,
+  ],
   templateUrl: './create-evaluation-form.component.html',
   styleUrl: './create-evaluation-form.component.css',
 })
@@ -27,34 +34,37 @@ export class CreateEvaluationFormComponent {
 
   evaluationForms = formEvaluations;
   submitted = signal(false);
-
+  activeQuestionIndex: number | null = null;
   createEvaluationFrom = this.formBuilder.group({
     name: ['', [Validators.required]],
     formEvaluation: ['', [Validators.required]],
     questions: this.formBuilder.array<FormGroup>([]),
   });
 
-get questions(): FormArray<FormGroup> {
-  return this.createEvaluationFrom.get('questions') as FormArray<FormGroup>;
-}
-addQuestion(question?:Partial<question>):void{
-  this.questions.push(this.createQuestionForm(question))
-}
-removeQuestion(index: number): void {
+  get questions(): FormArray<FormGroup> {
+    return this.createEvaluationFrom.get('questions') as FormArray<FormGroup>;
+  }
+  addQuestion(question?: Partial<question>): void {
+    this.questions.push(this.createQuestionForm(question));
+    this.activeQuestionIndex = this.questions.length - 1;
+  }
+  removeQuestion(index: number): void {
     this.questions.removeAt(index);
   }
   onQuestionTypeChange(event: Event, questionForm: FormGroup): void {
-    debugger;
-  const selectElement = event.target as HTMLSelectElement;
-  const type = selectElement.value as unknown as questionType;
-
-  if (type !== questionType.SingleChoice && type !== questionType.MultipleChoice) {
-    const options = questionForm.get('options') as FormArray;
-    options?.clear();
+    const selectElement = event.target as HTMLSelectElement;
+    const type = selectElement.value as unknown as questionType;
+    if (
+      type !== questionType.SingleChoice &&
+      type !== questionType.MultipleChoice
+    ) {
+      const options = questionForm.get('options') as FormArray;
+      options?.clear();
+    }
   }
-}
   create() {
-    throw new Error('Method not implemented.');
+    this.submitted.set(true);
+    const formData = this.createEvaluationFrom.getRawValue();
   }
   //partial allows sending only the updated parts
   private createQuestionForm(question?: Partial<question>): FormGroup {
@@ -81,5 +91,9 @@ removeQuestion(index: number): void {
         [Validators.min(1), Validators.max(10)],
       ],
     });
+  }
+  toggleAccordion(index: number): void {
+    this.activeQuestionIndex =
+      this.activeQuestionIndex === index ? null : index;
   }
 }

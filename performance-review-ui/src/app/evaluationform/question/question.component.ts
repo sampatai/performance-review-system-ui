@@ -44,7 +44,8 @@ export class QuestionComponent {
     );
   }
   get showRatingSection(): boolean {
-    const type = this.questionForm.get('type')?.value;
+   
+    const type = this.questionForm.get('questionType')?.value;
     return (
       type === questionType.RatingScale || type === questionType.RatingAndText
     );
@@ -77,9 +78,7 @@ export class QuestionComponent {
     });
   }
    onTypeChange(): void {
-    this.typeChange.emit(this.questionForm.get('type')?.value);
-  if(!this.showOptionSelection)
-    this.options.clear();
+    this.typeChange.emit(this.questionForm.get('questionType')?.value);
   }
   
   showRatingError(): boolean {
