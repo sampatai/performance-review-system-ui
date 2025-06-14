@@ -5,9 +5,6 @@
     <div class="card shadow-lg border-0 rounded-lg">
       <div class="card-body">
         <form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
-
-
-
           <div class="row mb-3">
             <!-- First Name -->
             <div class="col-md-6">
@@ -52,9 +49,9 @@
           <div class="row mb-3">
             <div class="col-md-6">
               <div class="form-floating mb-3 mb-md-0">
-                <select formControlName="team" class="form-control"
+                <select formControlName="team" class="form-select"
                   [class.is-invalid]="submitted() && registerForm.controls.team.invalid">
-                  <option [ngValue]="null" disabled>Select Team</option>
+                  <option [ngValue]="null" disabled></option>
                   @for (team of teams; track team) {
                   <option [value]="team.id">{{ team.name }}</option>
                   }
@@ -68,9 +65,9 @@
 
             <div class="col-md-6">
               <div class="form-floating">
-                <select formControlName="role" class="form-control"
+                <select formControlName="role" class="form-select"
                   [class.is-invalid]="submitted() && registerForm.controls.role.invalid">
-                  <option [ngValue]="null" disabled>Select Role</option>
+                  <option [ngValue]="null"></option>
                   @for (role of roles; track role) {
                   <option [value]="role.id">{{ role.name }}</option>
                   }
@@ -85,10 +82,10 @@
           <div class="row mb-3">
             <div class="col-md-6">
               <div class="form-floating mb-3 mb-md-0">
-                <select formControlName="managerId" class="form-control"
+                <select formControlName="managerId" class="form-select"
                 [(ngModel)]="selectedManager"
                 [disabled]=" loadingManager()">
-                  <option [ngValue]="null" disabled>Select manager</option>
+                  <option [ngValue]="null"></option>
                   @for (m of managers(); track m) {
                   <option [value]="m.id">{{ m.fullName }}</option>
                   }

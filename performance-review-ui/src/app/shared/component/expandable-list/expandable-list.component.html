@@ -31,18 +31,20 @@
                     </th>
 
                     }
+                    <th class="small text-center"></th>
+
                 </tr>
             </thead>
             <tbody>
-                @for (item of data; track item.id) {
-                <tr (click)="toggleExpand(item.id)" class="cursor-pointer"
-                    [class.table-active]="expandedRowId === item.id">
+                @for (item of data; track item; let i = $index) {
+                <tr  class="cursor-pointer"
+                    [class.table-active]="expandedRowId === i">
                     <!-- Expand Icon Cell -->
-                    <td (click)="$event.stopPropagation()">
+                    <td (click)="toggleExpand(i)">
                         @if (hasChildren(item)) {
                         <i class="bi" [ngClass]="{
-               'bi-chevron-down': expandedRowId === item.id,
-               'bi-chevron-right': expandedRowId !== item.id
+               'bi-chevron-down': expandedRowId === i,
+               'bi-chevron-right': expandedRowId !== i
              }" class="me-2">
                         </i>
                         }
@@ -52,13 +54,13 @@
                     <td> {{ getItemValue(item,col.key)||'-'}}</td>
                     }
                     <td>
-                        <!-- <a class="btn btn-sm btn-outline-primary" [routerLink]="getEditRoute(item.id)">
+                        <a class="btn btn-sm btn-outline-primary" [routerLink]="getEditRoute(item.id)">
                             <span class="bi bi-pencil-square"></span>
-                        </a> -->
+                        </a>
                     </td>
                 </tr>
                 <!-- Expanded Child Row -->
-                @if(expandedRowId===item.id){
+                @if(expandedRowId===i){
                 <tr class="table table-sm">
                     <td [attr.colspan]="columns.length + 2">
                         <table class="table table-sm table-bordered mb-0">

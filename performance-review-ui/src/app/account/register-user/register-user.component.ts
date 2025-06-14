@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Team } from '../../shared/Enums/Team';
 import { Role } from '../../shared/Enums/Role';
 import { AccountService } from '../../services/account.service';
@@ -12,6 +12,7 @@ import { register } from '../../shared/models/accounts/register/register.model';
 import { ErrorHandlingService } from '../../shared/service/error-handler.service';
 import { manager } from '../../shared/models/accounts/register/manager.model';
 import { take } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -32,6 +33,7 @@ export class RegisterUserComponent implements OnInit {
   private accountService = inject(AccountService);
   private router = inject(Router);
   private errorHandler = inject(ErrorHandlingService);
+  protected destroyRef=inject(DestroyRef);
 
   // Component State
   submitted = signal(false);
@@ -45,20 +47,42 @@ export class RegisterUserComponent implements OnInit {
   selectedManager = signal<manager | null>(null);
 
   // Form Group with Type Safety
-  registerForm = this.formBuilder.group({
-    firstName: ['', [Validators.required]],
-    lastName: ['', [Validators.required]],
-    email: [
-      '',
-      [Validators.required, Validators.email],
-    ],
-    team: [null as number | null, [Validators.required]],
-    role: [null as number | null, [Validators.required]],
-    managerId: [null as number | null]
+  registerForm: FormGroup<{
+  firstName: FormControl<string>;
+  lastName: FormControl<string>;
+  email: FormControl<string>;
+  team: FormControl<number>;
+  role: FormControl<number>;
+  managerId: FormControl<number | null>; 
+}>;
+constructor() {
+  this.registerForm = this.formBuilder.group({
+    firstName: new FormControl('', { 
+      validators: [Validators.required], 
+      nonNullable: true 
+    }),
+    lastName: new FormControl('', { 
+      validators: [Validators.required], 
+      nonNullable: true 
+    }),
+    email: new FormControl('', { 
+      validators: [Validators.required, Validators.email], 
+      nonNullable: true 
+    }),
+    team: new FormControl(0, { 
+      validators: [Validators.required], 
+      nonNullable: true 
+    }),
+    role: new FormControl(0, { 
+      validators: [Validators.required], 
+      nonNullable: true 
+    }),
+    managerId: new FormControl<number | null>(null),
   });
+}
   ngOnInit(): void {
     this.registerForm.get('team')?.valueChanges
-    .pipe(take(1))
+    .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe((teamId) => {
       this.loadManagers(teamId);
     });
@@ -68,18 +92,12 @@ export class RegisterUserComponent implements OnInit {
     this.errorMessages.set([]);
 
     if (this.registerForm.valid) {
-      const formValues = this.registerForm.value;
+      const registerData: register = this.registerForm.getRawValue();
 
-      const registerData: register = {
-        firstName: formValues.firstName!,
-        lastName: formValues.lastName!,
-        email: formValues.email!,
-        team: Number(formValues.team),
-        role: Number(formValues.role),
-        managerId: formValues.managerId !== null ? Number(formValues.managerId) : null
-      };
-
-      this.accountService.register(registerData).subscribe({
+      this.accountService
+      .register(registerData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: () => this.router.navigate(['/staff/list']),
         error: (error) => {
           this.errorHandler.handleHttpError(error, this.errorMessages);

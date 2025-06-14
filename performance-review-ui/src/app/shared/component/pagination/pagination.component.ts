@@ -60,7 +60,7 @@ export class PaginationComponent {
     //reduce() is used here to iterate over the array of keys,
     //  starting from the item object and drilling down
     //  into the nested properties
-    return key.split('.').reduce((o, i) => o[i], item);
+   return key.split('.').reduce((o: any, i: string) => (o ? o[i] : undefined), item);
   }
   onSearchEnter(event: Event) {
     const inputElement = event.target as HTMLInputElement;

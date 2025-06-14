@@ -51,7 +51,6 @@ export class AccountService {
       .post<User>(`${environment.appUrl}account/login`, model)
       .pipe(
         map((user: User) => {
-          debugger;
           if (user && user.jwt) {
           const decoded: any = jwtDecode(user.jwt);
            user.role = decoded.role; 
