@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { SidebarService } from '../../shared/service/sidebar.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -8,5 +9,5 @@ import { RouterModule } from '@angular/router';
   styleUrl: './side-bar.component.css'
 })
 export class SideBarComponent {
-
+protected sidebarService=inject(SidebarService);
 }

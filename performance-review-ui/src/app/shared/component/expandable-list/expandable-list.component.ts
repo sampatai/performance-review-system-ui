@@ -15,7 +15,7 @@ import { RouterLink } from '@angular/router';
 })
 export class ExpandableListComponent {
   @Input() data: any[] = [];
-  @Input() totalPageNumber = 0;
+  @Input() totalCount = 0;
   @Input() columns: column[] = [];
   @Input() childColumns: column[] = [];
   @Input() childrenKey: string = '';
@@ -29,10 +29,10 @@ export class ExpandableListComponent {
   expandedRowId: any = null;
   get totalPages(): Number {
     const pagesize = this.search.pageSize;
-    return pagesize == 0 ? 1 : Math.ceil(this.totalPageNumber / pagesize);
+    return pagesize == 0 ? 1 : Math.ceil(this.totalCount / pagesize);
   }
   onPageChange(page: number) {
-    if (page >= 1 && page <= this.totalPageNumber) {
+    if (page >= 1 && page <= this.totalCount) {
       //triggers an event that the parent component can listen to.
       //It sends an object { page } (short for { page: page }) to the parent.
       //The parent can then react to this change (e.g., fetch new data for the next page).
@@ -62,7 +62,6 @@ export class ExpandableListComponent {
     return [this.editRouteBase, id];
   }
   toggleExpand(id: any) {
-    debugger;
     this.expandedRowId = this.expandedRowId === id ? null : id;
   }
   // Accesses nested value using a key path string, e.g.:

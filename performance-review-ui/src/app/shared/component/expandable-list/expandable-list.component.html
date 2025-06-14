@@ -89,7 +89,7 @@
             </tbody>
         </table>
     </div>
-    @if (totalPageNumber > 1) {
+    @if (totalCount > 1) {
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center mb-0">
             <li class="page-item" [class.disabled]="search.page === 1">
@@ -100,11 +100,11 @@
 
             <li class="page-item disabled">
                 <span class="page-link">
-                    Page {{ search.page }} of {{ totalPageNumber }}
+                    Page {{ search.page }} of {{ totalPages }}
                 </span>
             </li>
 
-            <li class="page-item" [class.disabled]="search.page === totalPageNumber">
+            <li class="page-item" [class.disabled]="search.page === totalPages">
                 <button class="page-link" (click)="onPageChange(search.page + 1)">
                     <span aria-hidden="true">&raquo;</span>
                 </button>
