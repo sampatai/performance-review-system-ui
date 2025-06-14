@@ -83,7 +83,6 @@ export const routes: Routes = [
       {
         path: ROUTES.EVALUATION_FORM.EDIT,
         data: { roles: ['Admin','Manager'], title: 'Edit Evaluation Form' },
-
         loadComponent: () =>
           import('./evaluationform/edit-evaluation-form/edit-evaluation-form.component').then(
             m => m.EditEvaluationFormComponent

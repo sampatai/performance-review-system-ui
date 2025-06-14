@@ -33,7 +33,6 @@ export class AccountService {
   }
 
   private loadUserFromLocalStorage(): User | null {
-    debugger;
     const userJson = localStorage.getItem(environment.userKey);
     if (!userJson) return null;
 

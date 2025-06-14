@@ -1,16 +1,26 @@
-import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  CanActivateFn,
+  Router,
+  RouterStateSnapshot,
+} from '@angular/router';
 import { AccountService } from '../../services/account.service';
-import { inject } from '@angular/core';
+import { DestroyRef, inject } from '@angular/core';
 import { map, take } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-export const authGuard: CanActivateFn = (next: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot) => {
+export const authGuard: CanActivateFn = (
+  next: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
   const accountService = inject(AccountService);
+  const destroyRef = inject(DestroyRef);
   const router = inject(Router);
-   const allowedRoles = next.data?.['roles'] as string[] | undefined;
+
+  const allowedRoles = next.data?.['roles'] as string[] | undefined;
   return accountService.user$.pipe(
-    take(1),
-    map(user => {
+    takeUntilDestroyed(destroyRef),
+    map((user) => {
       const isAuthenticated = !!user;
       if (!isAuthenticated) {
         router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
@@ -18,12 +28,11 @@ export const authGuard: CanActivateFn = (next: ActivatedRouteSnapshot,
       }
       //  No role restriction on route
       if (!allowedRoles || allowedRoles.length === 0) return true;
- //Check if user role matches
+      //Check if user role matches
       if (allowedRoles.includes(user.role)) return true;
       //Role mismatch → redirect to unauthorized
       router.navigate(['/unauthorized']);
-      return false; 
-
+      return false;
     })
   );
 };

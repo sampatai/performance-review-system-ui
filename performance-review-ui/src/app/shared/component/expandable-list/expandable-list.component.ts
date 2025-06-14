@@ -21,12 +21,20 @@ export class ExpandableListComponent {
   @Input() childrenKey: string = '';
   @Input() search!: filter;
   @Input() pageSizeOptions = PAGINATION_DEFAULTS.PAGE_SIZE_OPTIONS;
-  @Input() editRouteBase: string = '';
+  @Input() routeBase: string = '';
+  @Input() routeGenerator: (item: any, baseRoute: string) => any[] = (item: any, baseRoute: string) => [baseRoute, item];
 
+ 
 // Emits changes to the filter state (e.g., sort, search, pagination)
 // Partial<filter> allows sending only the updated parts
   @Output() stateChange = new EventEmitter<Partial<filter>>();
+  defaultRouteGenerator!: (item: any) => any[]; // Declare a property
   expandedRowId: any = null;
+
+  ngOnInit(): void {
+    // Initialize the default route generator in ngOnInit
+    this.defaultRouteGenerator = (item: any) => this.routeGenerator(item, this.routeBase);
+  }
   get totalPages(): Number {
     const pagesize = this.search.pageSize;
     return pagesize == 0 ? 1 : Math.ceil(this.totalCount / pagesize);

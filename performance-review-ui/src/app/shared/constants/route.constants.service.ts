@@ -1,14 +1,20 @@
+
+// Define shared path segments
+const EVALUATION_FORM_INIT = 'evaluationform';
+const ACCOUNT_INIT = 'account';
+
 export const ROUTES = {
   LOGIN: 'login',
   DASHBOARD: 'dashboard',
   STAFF: 'staff/list',
+
   ACCOUNT: {
-    REGISTER: 'account/register',
-    EDIT: 'account/edit-user/:id',
+    REGISTER: `${ACCOUNT_INIT}/register`,
+    EDIT: `${ACCOUNT_INIT}/edit-user/:id`,
   },
   EVALUATION_FORM: {
-    TEMPLATE: 'evaluationform/template',
-    CREATE: 'evaluationform/create',
-    EDIT: 'evaluationform/edit/:id',
-  }
+    TEMPLATE: `${EVALUATION_FORM_INIT}/template`,
+    CREATE: `${EVALUATION_FORM_INIT}/create`,
+    EDIT: `${EVALUATION_FORM_INIT}/edit/:id`,
+  },
 };
