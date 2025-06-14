@@ -37,17 +37,20 @@ export class QuestionComponent {
   get options(): FormArray {
     return this.questionForm.get('options') as FormArray;
   }
+  get questionTypeValue(): any {
+    return this.questionForm.get('questionType')?.value;
+}
+
   get showOptionSelection(): boolean {
-    const type = this.questionForm.get('questionType')?.value;
+    const type = this.questionTypeValue;
     return (
       type === questionType.MultipleChoice || type === questionType.SingleChoice
     );
   }
   get showRatingSection(): boolean {
-   
-    const type = this.questionForm.get('questionType')?.value;
+    const type = this.questionTypeValue;
     return (
-      type === questionType.RatingScale || type === questionType.RatingAndText
+      type === questionType.RatingScale
     );
   }
   validate(controlName: string): boolean {

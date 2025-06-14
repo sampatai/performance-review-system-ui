@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../../services/account.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -13,6 +13,7 @@ import { editRegister } from '../../shared/models/accounts/register/register-edi
 import { register } from '../../shared/models/accounts/register/register.model';
 import { manager } from '../../shared/models/accounts/register/manager.model';
 import { ErrorHandlingService } from '../../shared/service/error-handler.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-edit-user',
@@ -32,6 +33,7 @@ export class EditUserComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private errorHandler = inject(ErrorHandlingService);
+  private destroyRef=inject(DestroyRef);
   submitted = signal(false);
   teams = Team.allTeams;
   roles = Role.allRoles;
@@ -52,7 +54,7 @@ export class EditUserComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap
       .pipe(
-        take(1),
+       takeUntilDestroyed(this.destroyRef),
         switchMap((params) => {
           this.staffId = params.get('id') ?? undefined;
           return this.staffId ? this.accountService.getUserById(this.staffId) : of(null);
@@ -63,6 +65,8 @@ export class EditUserComponent implements OnInit {
           if (user) {
             
             this.editRegisterForm.reset();
+            //If the property names match exactly
+            //It's more flexible because you don't need to provide values for all controls.
             this.editRegisterForm.patchValue(user);
           this.loadManagers(user.team,user.managerId);
           }
@@ -79,8 +83,9 @@ export class EditUserComponent implements OnInit {
    this.errorMessages.set([]);
    if(this.editRegisterForm.valid){
     const formData=this.editRegisterForm.getRawValue() as register;
-    this.accountService.updateUser(formData,this.staffId)
-    .pipe(take(1))
+    this.accountService
+    .updateUser(formData,this.staffId)
+    .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next:()=>this.router.navigate(['/staff/list'],{
         state:{message:'Updated successfully.'}
@@ -101,7 +106,7 @@ export class EditUserComponent implements OnInit {
     if(teamId){
       this.accountService
       .getManagers(teamId)
-      .pipe(take(1))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next:(m)=>{
           this.managers.set(m)

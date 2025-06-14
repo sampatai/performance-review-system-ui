@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ValidationMessageComponent } from '../../shared/component/validation-message/validation-message.component';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -7,6 +7,7 @@ import { map, of, switchMap, take } from 'rxjs';
 import { SubmitButtonComponent } from "../../shared/component/submit-button/submit-button.component";
 import { CommonModule } from '@angular/common';
 import { Login } from '../../shared/models/accounts/Login/login.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login',
@@ -26,6 +27,7 @@ export class LoginComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private accountService = inject(AccountService);
+  protected destroyRef=inject(DestroyRef);
 
   loginForm = this.fb.group({
     userName: ['', [Validators.required]],
@@ -43,7 +45,7 @@ export class LoginComponent {
   private checkAuthentication() {
     this.accountService.user$
       .pipe(
-        take(1),
+        takeUntilDestroyed(this.destroyRef),
         switchMap(user => user ? this.handleAuthenticatedUser() : this.getReturnUrl())
       )
       .subscribe();
@@ -71,7 +73,10 @@ export class LoginComponent {
             password: formValues.password!,   
               
           };
-      this.accountService.login(login).subscribe({
+      this.accountService
+      .login(login)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: () => this.navigateAfterLogin(),
         error: (err) => this.handleLoginError(err)
       });

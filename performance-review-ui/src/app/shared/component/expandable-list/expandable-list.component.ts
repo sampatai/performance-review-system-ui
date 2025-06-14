@@ -62,6 +62,7 @@ export class ExpandableListComponent {
     return [this.editRouteBase, id];
   }
   toggleExpand(id: any) {
+    debugger;
     this.expandedRowId = this.expandedRowId === id ? null : id;
   }
   // Accesses nested value using a key path string, e.g.:

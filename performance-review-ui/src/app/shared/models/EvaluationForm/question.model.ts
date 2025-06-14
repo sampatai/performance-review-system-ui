@@ -7,9 +7,19 @@ export interface question {
   question: string;
   questionType: nameValue;
   isRequired: boolean;
+  addRemarks:boolean;
   Options: option[];
-  ratingMin: Number;
-  ratingMax: Number;
+  ratingMin?: number;
+  ratingMax?: number;
+}
+export interface setQuestion {
+  question: string;
+  questionType: number;
+  isRequired: boolean;
+  addRemarks:boolean;
+  Options: option[];
+  ratingMin?: number;
+  ratingMax?: number;
 }
 export interface getQuestion extends question {
   questionGuid: string;

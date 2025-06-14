@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Team } from '../../shared/Enums/Team';
 import { Role } from '../../shared/Enums/Role';
@@ -12,6 +12,7 @@ import { register } from '../../shared/models/accounts/register/register.model';
 import { ErrorHandlingService } from '../../shared/service/error-handler.service';
 import { manager } from '../../shared/models/accounts/register/manager.model';
 import { take } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -32,6 +33,7 @@ export class RegisterUserComponent implements OnInit {
   private accountService = inject(AccountService);
   private router = inject(Router);
   private errorHandler = inject(ErrorHandlingService);
+  protected destroyRef=inject(DestroyRef);
 
   // Component State
   submitted = signal(false);
@@ -80,7 +82,7 @@ constructor() {
 }
   ngOnInit(): void {
     this.registerForm.get('team')?.valueChanges
-    .pipe(take(1))
+    .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe((teamId) => {
       this.loadManagers(teamId);
     });
@@ -92,7 +94,10 @@ constructor() {
     if (this.registerForm.valid) {
       const registerData: register = this.registerForm.getRawValue();
 
-      this.accountService.register(registerData).subscribe({
+      this.accountService
+      .register(registerData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: () => this.router.navigate(['/staff/list']),
         error: (error) => {
           this.errorHandler.handleHttpError(error, this.errorMessages);

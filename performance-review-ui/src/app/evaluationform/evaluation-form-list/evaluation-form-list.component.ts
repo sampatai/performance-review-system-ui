@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { PaginationService } from '../../shared/service/pagination.service';
 import { EvaluationFormService } from '../../services/evaluationForm.service';
 import { column } from '../../shared/models/common/column.model';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import {
   catchError,
   debounceTime,
@@ -26,7 +26,7 @@ import { ExpandableListComponent } from "../../shared/component/expandable-list/
 export class EvaluationFormListComponent {
   protected paginationService = inject(PaginationService);
   protected evaluationFormService = inject(EvaluationFormService);
-
+  private destroyRef =inject(DestroyRef);
   evaluationFormColumns: column[] = [
     
     { label: 'Template Name', key: 'name', sortable: true },
@@ -47,7 +47,8 @@ export class EvaluationFormListComponent {
         this.evaluationFormService
           .getEvaluationForms(s)
           .pipe(catchError(() => of({ data: [], totalRecords: 0 })))
-      )
+      ),
+      takeUntilDestroyed(this.destroyRef) //utomatically unsubscribe from the observable when the component is destroyed.s
     ),
     {
       initialValue: {//Converts the observable stream into an Angular Signal.

@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { filter } from '../models/common/filter.model';
 import { PAGINATION_DEFAULTS } from '../constants/pagination.constants';
 
@@ -15,8 +15,9 @@ export class PaginationService {
     sortColumn: '',
     sortDirection: PAGINATION_DEFAULTS.SORT_DIRECTION,
   });
-
-  readonly stateSignal = this.state.asReadonly(); //Make the state signal read-only
+//computed signal for stateSignal to derive read-only state.
+// This can improve performance and reduce the risk of accidental modifications.
+  readonly stateSignal =  computed(() => this.state()); 
   readonly pageSizeOptions: readonly number[] = PAGINATION_DEFAULTS.PAGE_SIZE_OPTIONS; //0 for all records
 /**
  * Updates the current filter state with new values.
@@ -33,6 +34,9 @@ export class PaginationService {
   updateState(update: Partial<filter>) {
     this.state.update((prevState) => ({ ...prevState, ...update }));
   }
+   /**
+   * Resets the pagination state to its default values.
+   */
   resetState() {
     this.state.set({
       page: PAGINATION_DEFAULTS.DEFAULT_PAGE,

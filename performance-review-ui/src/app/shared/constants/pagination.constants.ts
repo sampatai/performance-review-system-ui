@@ -4,3 +4,4 @@ export const PAGINATION_DEFAULTS = {
     PAGE_SIZE_OPTIONS: [10, 25, 50, 100],
     SORT_DIRECTION: 'desc',
   } as const;
+  
