@@ -58,4 +58,7 @@ export class EvaluationFormListComponent {
       } as pageList<getEvaluationForm>,
     }
   );
+  evaluationRouteGenerator = (item: any, editRouteBase: string) => {
+  return [editRouteBase, 'edit', item.evaluationFormGuid];
+};
 }

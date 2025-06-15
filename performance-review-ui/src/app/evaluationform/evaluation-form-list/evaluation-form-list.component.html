@@ -6,12 +6,14 @@
         <div class="card shadow-lg border-0 rounded-lg">
             <app-expandable-list
                 [data]="evaluationForms().data || []"
-                [totalPageNumber]="evaluationForms().totalRecords || 0"
+                [totalCount]="evaluationForms().totalRecords || 0"
                 [columns]="evaluationFormColumns"
                 [childColumns]="questionColumns"
                 [childrenKey]="'questions'"
                 [search]="paginationService.stateSignal()"               
-                (stateChange)="paginationService.updateState($event)"             
+                (stateChange)="paginationService.updateState($event)"   
+                [editRouteBase]="'/evaluationform'"  
+                [routeGenerator]="evaluationRouteGenerator"
                 />                      
         </div>
     </div>

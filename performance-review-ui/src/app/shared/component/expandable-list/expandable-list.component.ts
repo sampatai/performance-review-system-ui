@@ -15,24 +15,32 @@ import { RouterLink } from '@angular/router';
 })
 export class ExpandableListComponent {
   @Input() data: any[] = [];
-  @Input() totalPageNumber = 0;
+  @Input() totalCount = 0;
   @Input() columns: column[] = [];
   @Input() childColumns: column[] = [];
   @Input() childrenKey: string = '';
   @Input() search!: filter;
   @Input() pageSizeOptions = PAGINATION_DEFAULTS.PAGE_SIZE_OPTIONS;
-  @Input() editRouteBase: string = '';
+  @Input() routeBase: string = '';
+  @Input() routeGenerator: (item: any, baseRoute: string) => any[] = (item: any, baseRoute: string) => [baseRoute, item];
 
+ 
 // Emits changes to the filter state (e.g., sort, search, pagination)
 // Partial<filter> allows sending only the updated parts
   @Output() stateChange = new EventEmitter<Partial<filter>>();
+  defaultRouteGenerator!: (item: any) => any[]; // Declare a property
   expandedRowId: any = null;
+
+  ngOnInit(): void {
+    // Initialize the default route generator in ngOnInit
+    this.defaultRouteGenerator = (item: any) => this.routeGenerator(item, this.routeBase);
+  }
   get totalPages(): Number {
     const pagesize = this.search.pageSize;
-    return pagesize == 0 ? 1 : Math.ceil(this.totalPageNumber / pagesize);
+    return pagesize == 0 ? 1 : Math.ceil(this.totalCount / pagesize);
   }
   onPageChange(page: number) {
-    if (page >= 1 && page <= this.totalPageNumber) {
+    if (page >= 1 && page <= this.totalCount) {
       //triggers an event that the parent component can listen to.
       //It sends an object { page } (short for { page: page }) to the parent.
       //The parent can then react to this change (e.g., fetch new data for the next page).
@@ -62,7 +70,6 @@ export class ExpandableListComponent {
     return [this.editRouteBase, id];
   }
   toggleExpand(id: any) {
-    debugger;
     this.expandedRowId = this.expandedRowId === id ? null : id;
   }
   // Accesses nested value using a key path string, e.g.:
