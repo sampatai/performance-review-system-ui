@@ -14,6 +14,7 @@ import {
   getQuestion,
   option,
   question,
+  updateQuestion,
 } from '../../shared/models/EvaluationForm/question.model';
 import { getOrEmptyGuid } from '../../shared/utils/default.guid';
 import { questionType } from '../../shared/Enums/question-type.enum';
@@ -47,7 +48,7 @@ export class EditEvaluationFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   updateEvaluationForm = this.formBuilder.group({
     name: ['', [Validators.required]],
-    formEvaluation: [null as nameValue | null, [Validators.required]],
+    formEvaluation: [null as number | null, [Validators.required]],
     questions: this.formBuilder.array<FormGroup>([]),
   });
   submitted = signal(false);
@@ -71,8 +72,20 @@ export class EditEvaluationFormComponent implements OnInit {
           if (form) {
             this.updateEvaluationForm.reset();
             // Map temp to match the form structure if needed
-            this.updateEvaluationForm.patchValue(form);
-            form.questions.forEach(q => this.questions.push(this.createQuestionForm(q)));
+            this.updateEvaluationForm.patchValue({
+              ...form,
+              formEvaluation: form.formEvaluation?.id ?? null,
+            });
+            form.questions.forEach(q => 
+              this.questions.push(
+                this.createQuestionForm({
+                  ...q,
+                  questionType: typeof q.questionType === 'object' && q.questionType !== null && 'id' in q.questionType
+                    ? q.questionType.id
+                    : q.questionType
+                })
+              )
+            );
 
           }
         },
@@ -89,7 +102,7 @@ export class EditEvaluationFormComponent implements OnInit {
     return this.updateEvaluationForm.get('questions') as FormArray;
   }
 
-  createQuestionForm(question: Partial<getQuestion>): FormGroup {
+  createQuestionForm(question: Partial<updateQuestion>): FormGroup {
     return this.formBuilder.group({
       questionGuid: [getOrEmptyGuid(question?.questionGuid)],
       question: [question?.question || '', Validators.required],
@@ -134,7 +147,7 @@ export class EditEvaluationFormComponent implements OnInit {
   removeQuestion(index: number): void {
     this.questions.removeAt(index);
   }
-  
+
   update() {
     throw new Error('Method not implemented.');
   }
