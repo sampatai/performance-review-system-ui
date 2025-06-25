@@ -22,7 +22,9 @@ export class EvaluationFormService {
     );
   }
   create(model: createEvaluationForm) {
-    debugger;
     return this.http.post(`${environment.appUrl}evaluationfrom`, model);
+  }
+  getEvaluationTemplate(evaluationGuid:string):Observable<getEvaluationForm>{
+    return this.http.get<getEvaluationForm>(`${environment.appUrl}evaluationfrom/${evaluationGuid}`);
   }
 }

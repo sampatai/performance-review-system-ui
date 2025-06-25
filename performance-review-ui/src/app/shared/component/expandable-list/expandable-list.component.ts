@@ -66,9 +66,7 @@ export class ExpandableListComponent {
     const inputElement = event.target as HTMLInputElement;
     this.stateChange.emit({ searchTerm: inputElement.value, page: 1 });
   }
-  getEditRoute(id: any): any[] {
-    return [this.editRouteBase, id];
-  }
+  
   toggleExpand(id: any) {
     this.expandedRowId = this.expandedRowId === id ? null : id;
   }

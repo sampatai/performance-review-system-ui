@@ -12,6 +12,9 @@ export interface question {
   ratingMin?: number;
   ratingMax?: number;
 }
+export interface getQuestion extends question {
+  questionGuid: string;
+}
 export interface setQuestion {
   question: string;
   questionType: number;
@@ -21,6 +24,7 @@ export interface setQuestion {
   ratingMin?: number;
   ratingMax?: number;
 }
-export interface getQuestion extends question {
+export interface updateQuestion extends setQuestion{
   questionGuid: string;
 }
+

@@ -12,7 +12,7 @@
                 [childrenKey]="'questions'"
                 [search]="paginationService.stateSignal()"               
                 (stateChange)="paginationService.updateState($event)"   
-                [editRouteBase]="'/evaluationform'"  
+                [routeBase]="'/evaluationform'"  
                 [routeGenerator]="evaluationRouteGenerator"
                 />                      
         </div>
