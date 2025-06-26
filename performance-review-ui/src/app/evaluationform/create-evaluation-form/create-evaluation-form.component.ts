@@ -16,7 +16,6 @@ import { questionType } from '../../shared/Enums/question-type.enum';
 import { QuestionComponent } from '../question/question.component';
 import { SubmitButtonComponent } from '../../shared/component/submit-button/submit-button.component';
 import { createEvaluationForm } from '../../shared/models/EvaluationForm/evaluationform.model';
-import { DEFAULT_NAME_VALUE } from '../../shared/constants/common.constants';
 import { EvaluationFormService } from '../../services/evaluationForm.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -85,7 +84,7 @@ export class CreateEvaluationFormComponent {
           questionType: q.questionType,
           isRequired: q.isRequired,
           addRemarks: q.addRemarks,
-          Options: (q.options || []).map((opt: any) => ({
+          options: (q.options || []).map((opt: any) => ({
             option: opt.Option,
           })),
           ratingMin: q.ratingMin,

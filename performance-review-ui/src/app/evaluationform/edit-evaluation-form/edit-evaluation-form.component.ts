@@ -19,12 +19,14 @@ import {
 import { getOrEmptyGuid } from '../../shared/utils/default.guid';
 import { questionType } from '../../shared/Enums/question-type.enum';
 import { QuestionComponent } from '../question/question.component';
-import { SubmitButtonComponent } from "../../shared/component/submit-button/submit-button.component";
+import { SubmitButtonComponent } from '../../shared/component/submit-button/submit-button.component';
 import { EvaluationFormService } from '../../services/evaluationForm.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { of, switchMap } from 'rxjs';
 import { nameValue } from '../../shared/models/common/nameValue.model';
+import { updateEvaluationForm } from '../../shared/models/EvaluationForm/evaluationform.model';
+import { ErrorHandlingService } from '../../shared/service/error-handler.service';
 
 @Component({
   selector: 'app-edit-evaluation-form',
@@ -33,19 +35,21 @@ import { nameValue } from '../../shared/models/common/nameValue.model';
     ReactiveFormsModule,
     InputValidationMessageComponent,
     QuestionComponent,
-    SubmitButtonComponent
+    SubmitButtonComponent,
   ],
   templateUrl: './edit-evaluation-form.component.html',
   styleUrl: './edit-evaluation-form.component.css',
 })
 export class EditEvaluationFormComponent implements OnInit {
-
   protected formBuilder = inject(FormBuilder);
   private evaluationFormService = inject(EvaluationFormService);
   private destroyRef = inject(DestroyRef);
-  activeQuestionIndex: number = -1;
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private errorHandler = inject(ErrorHandlingService);
+
+  activeQuestionIndex: number = -1;
+
   updateEvaluationForm = this.formBuilder.group({
     name: ['', [Validators.required]],
     formEvaluation: [null as number | null, [Validators.required]],
@@ -64,7 +68,11 @@ export class EditEvaluationFormComponent implements OnInit {
         switchMap((param) => {
           this.evaluationGuid = param.get('id') ?? undefined;
           //observable chain continues gracefully without making an HTTP request.
-          return this.evaluationGuid ? this.evaluationFormService.getEvaluationTemplate(this.evaluationGuid) : of(null)
+          return this.evaluationGuid
+            ? this.evaluationFormService.getEvaluationTemplate(
+                this.evaluationGuid
+              )
+            : of(null);
         })
       )
       .subscribe({
@@ -76,33 +84,36 @@ export class EditEvaluationFormComponent implements OnInit {
               ...form,
               formEvaluation: form.formEvaluation?.id ?? null,
             });
-            form.questions.forEach(q => 
+            form.questions.forEach((q) =>
               this.questions.push(
                 this.createQuestionForm({
                   ...q,
-                  questionType: typeof q.questionType === 'object' && q.questionType !== null && 'id' in q.questionType
-                    ? q.questionType.id
-                    : q.questionType
+                  questionType:
+                    typeof q.questionType === 'object' &&
+                    q.questionType !== null &&
+                    'id' in q.questionType
+                      ? q.questionType.id
+                      : q.questionType,
                 })
               )
             );
-
           }
         },
         error: (err) => this.errorMessages.set(['Failed to load user data']),
-
-      })
+      });
   }
 
   get questions(): FormArray<FormGroup> {
     return this.updateEvaluationForm.get('questions') as FormArray<FormGroup>;
   }
 
-  addQuestion(question?: Partial<question>): FormArray {
-    return this.updateEvaluationForm.get('questions') as FormArray;
+  addQuestion(question?: Partial<updateQuestion>): void {
+    this.questions.push(this.createQuestionForm(question ?? {}));
+    this.activeQuestionIndex = this.questions.length - 1;
   }
 
   createQuestionForm(question: Partial<updateQuestion>): FormGroup {
+    debugger;
     return this.formBuilder.group({
       questionGuid: [getOrEmptyGuid(question?.questionGuid)],
       question: [question?.question || '', Validators.required],
@@ -113,7 +124,7 @@ export class EditEvaluationFormComponent implements OnInit {
       isRequired: [question?.isRequired ?? false],
       addRemarks: [question?.addRemarks ?? false],
       options: this.formBuilder.array(
-        (question?.Options || []).map((opt: option) =>
+        (question?.options || []).map((opt: option) =>
           this.createOptionForm(opt)
         )
       ),
@@ -149,6 +160,39 @@ export class EditEvaluationFormComponent implements OnInit {
   }
 
   update() {
-    throw new Error('Method not implemented.');
+    this.submitted.set(true);
+    this.errorMessages.set([]);
+    if (this.updateEvaluationForm.valid) {
+      const rawValue = this.updateEvaluationForm.getRawValue();
+      const mapValue: updateEvaluationForm = {
+        name: rawValue.name ?? '',
+        formEvaluation: Number(rawValue.formEvaluation),
+
+        questions: ((rawValue.questions || []) as updateQuestion[]).map(
+          (q) => ({
+            questionGuid: q.questionGuid,
+            question: q.question,
+            questionType: q.questionType,
+            isRequired: q.isRequired,
+            addRemarks: q.addRemarks,
+            options: (q.options || []).map((opt: any) => ({
+              option: opt.Option,
+            })),
+            ratingMin: q.ratingMin,
+            ratingMax: q.ratingMax,
+          })
+        ),
+      };
+      this.evaluationFormService
+        .update(mapValue, getOrEmptyGuid(this.evaluationGuid))
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => this.router.navigate(['/evaluationform/template']),
+          error: (err) => {
+            this.errorHandler.handleHttpError(err,this.errorMessages);
+            this.submitted.set(false);
+          },
+        });
+    }
   }
 }

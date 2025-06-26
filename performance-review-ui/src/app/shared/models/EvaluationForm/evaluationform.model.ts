@@ -1,5 +1,5 @@
 import { nameValue } from '../common/nameValue.model';
-import { getQuestion, question, setQuestion } from './question.model';
+import { getQuestion, question, setQuestion, updateQuestion } from './question.model';
  export interface evaluationEntity{
  evaluationFormGuid: string;
  }
@@ -18,4 +18,7 @@ export interface getEvaluationForm extends getevaluationForm,evaluationEntity {
 
 export interface createEvaluationForm extends evaluationForm {
   questions: setQuestion[];
+}
+export interface updateEvaluationForm extends evaluationForm {
+  questions: updateQuestion[];
 }

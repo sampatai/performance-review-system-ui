@@ -6,6 +6,7 @@ import { pageList } from '../shared/models/common/pageList.model';
 import {
   createEvaluationForm,
   getEvaluationForm,
+  updateEvaluationForm,
 } from '../shared/models/EvaluationForm/evaluationform.model';
 import { environment } from '../../environments/environment';
 
@@ -26,5 +27,8 @@ export class EvaluationFormService {
   }
   getEvaluationTemplate(evaluationGuid:string):Observable<getEvaluationForm>{
     return this.http.get<getEvaluationForm>(`${environment.appUrl}evaluationfrom/${evaluationGuid}`);
+  }
+  update(model:updateEvaluationForm, evaluationGuid:string){
+    return this.http.put(`${environment.appUrl}evaluationfrom/${evaluationGuid}`,model);
   }
 }
