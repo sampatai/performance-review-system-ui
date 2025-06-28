@@ -26,3 +26,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 8081
 CMD ["nginx", "-g", "daemon off;"]
+
+
+#Stage 1 (builder): Uses Node.js to install dependencies and build your Angular app for production. The output is placed in /app/dist/performance-review-ui/browser.
+#Stage 2 (Nginx): Uses a lightweight Nginx image. It removes the default web files, copies your built Angular app into the Nginx web root, and applies your custom Nginx config (which is essential for Angular routing and static asset caching).
+#EXPOSE 8081: Makes port 8081 available for Docker to map to your host.
+#CMD: Runs Nginx in the foreground so the container stays alive.
